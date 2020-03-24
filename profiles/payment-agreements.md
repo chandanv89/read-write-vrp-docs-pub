@@ -203,6 +203,21 @@ As part of the authorization code grant:
 
 Once these steps are complete, the consent is considered to have been authorised by the PSU.
 
+### Consent Revocation
+
+A PSU may revoke consent for initiation of any future payment orders, by revoking the authorisation of Payment Agreement Consent, at any point in time.
+
+The PSU may request the TPP to revoke consent that it has authorised. If consent is revoked with the TPP:
+
+- The TPP must cease to initiate any future Payment Orders or Funds Confirmations using the Payment Agreement Consent.
+- The TPP must call the PATCH operation on the payment-agreement-consent resource, with Status modification request to change the payment-agreement-consent Status to Revoked, to indicate to the ASPSP that the PSU has revoked consent.
+
+The PSU may revoke the Payment Agreement Consent via ASPSP's online channel. If the consent is revoked via ASPSP:
+
+- The ASPSP must immediately update the payment-agreement-consent resource status to Revoked.
+- The ASPSP must fail any future payment order request using the ConsentId, with the Status Revoked.
+- The ASPSP must make a Notification Event available for the TPP to poll/deliver Real Time Event Notification for the event - consent-authorization-revoked.
+
 #### Multiple Authorisation
 
 - Multi Authorisation aspects of payment-agreement and payment-order resource is same PISP R/W Payment Initiation APIs.

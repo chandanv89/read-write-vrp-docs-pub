@@ -48,7 +48,9 @@ This resource description should be read in conjunction with a compatible Paymen
 | -------- |-------------- |-------- |----------- |----- |---------- |--------------- |--------------- |-------------- |--------------- |
 | payment-agreement-consents |POST |POST /payment-agreement-consents |Mandatory |payment-agreements:rw |Client Credentials |Signed Request Signed Response |Yes |OBWritePaymentAgreementConsent1 |OBWritePaymentAgreementConsentResponse1 |
 | payment-agreement-consents |GET |GET /payment-agreement-consents/{ConsentId} |Mandatory |payment-agreements:rw |Client Credentials |Signed Response |No |NA |OBWritePaymentAgreementConsentResponse1 |
-| payment-agreement-consents |POST |POST /payment-agreement-consents/{ConsentId}/funds-confirmation |Mandatory |payment-agreements:rw |Authorization Code |Signed Response |No |OBWritePFundsConfirmationRequest1 |OBWritePAFundsConfirmationResponse1 TBC |
+| payment-agreement-consents |POST |POST /payment-agreement-consents/{ConsentId}/funds-confirmation |Mandatory |payment-agreements:rw |Authorization Code |Signed Request Signed Response |No |OBWritePAFundsConfirmationRequest1 |OBWritePAFundsConfirmationResponse1 |
+| payment-agreement-consents |PATCH |PATCH /payment-agreement-consents/{ConsentId} |Mandatory |payment-agreements:rw |Client Credentials |Signed Request |No |OBWritePAConsentUpdateRequest1 |NA |
+
 
 ### POST /payment-agreement-consents
 
@@ -90,11 +92,22 @@ The available status codes for the payment-agreement-consent resource are:
 
 ### POST /payment-agreement-consents/{ConsentId}/funds-confirmation
 
-The API endpoint allows the TPP to ask an ASPSP to confirm funds on a **payment-agreement-consent** resource, for the Debtor Accounts provided to the TPP by the ASPSP during the staging of the consent.
+This API endpoint allows the TPP to ask an ASPSP to confirm funds on a **payment-agreement-consent** resource, for the Debtor Accounts provided to the TPP by the ASPSP during the staging of the consent.
 
 - An ASPSP can only respond to a funds confirmation request if the **payment-agreement-consent** resource has an Authorised status. If the status is not Authorised, an ASPSP must respond with a 400 (Bad Request) and a ```UK.OBIE.Resource.InvalidConsentStatus``` error code.
 - Confirmation of funds requests do not affect the status of the **payment-agreement-consent** resource.
 - In case of a Payment Agreements Consent with multiple Debtor Accounts, the TPP must always specify the Debtor Account(s), against which the Confirmation of funds is requested.
+
+###  PATCH /payment-agreement-consents/{ConsentId}
+
+This endpoint can be used by the TPP to modify the Payment Agreement Consent, partially, i.e. elements of the consent. 
+
+- An ASPSP may request the TPP to get PSU's authorisation for such a change. In such a case:
+  - ASPSP must update the payment-agreement-consent status to `AwaitingAuthorisation`, and
+  - ASPSP must respond back with HTTP Status 302, indicating to the TPP that a PSU Authentication is required.
+
+This endpoint can be used by the TPP, in case of PSU Revoking the Consent, via TPP's channel.
+The TPP can sent the request to only update the Status to be Revoked.
 
 ### State Model
 
@@ -203,7 +216,36 @@ The confirmation of funds response contains the result of a funds availability c
 
 TBC
 
-## Usage Examples
+### Payment Agreement Consent Update - Request
+
+The OBWritePAFundsConfirmationRequest1 object must be used to request funds availability for a specific amount, across the Debtor Accounts included in the Payment Agreement Consent.
+The TPP must specify at least 1 debtor account, and the specified debtor accounts must be from the set of debtor account(s), specified and later authorised by the PSU.
+
+- POST /payment-agreement-consents/{ConsentId}/funds-confirmation
+
+#### UML Diagram
+
+![OBWritePAFundsConfirmationRequest1](./images/OBWritePAFundsConfirmationRequest1.gif)
+
+#### Notes
+
+TBC
+
+#### Data Dictionary 
+
+TBC
+
+### Payment Agreement Consent Update - Response
+
+The response to the update request could be one of the following HTTP Status codes, no payload is required.
+
+| Http Status Code| Description|
+|-- | -- |
+|204| No Content, updates applied successfully|
+|302| Updates require PSU Authorisation|
+|4xx| Validation Errors|
+
+## Usage Examples - TBC
 
 Note, further usage examples are available [here](../../references/usage-examples/README.md).
 
@@ -226,23 +268,32 @@ Accept: application/json
 ```json
 {
   "Data": {
-    "ReadRefundAccount": "Yes",
-    "Initiation": {
-      "InstructionIdentification": "ACME412",
-      "EndToEndIdentification": "FRESCO.21302.GFX.20",
-      "InstructedAmount": {
-        "Amount": "165.88",
-        "Currency": "GBP"
-      },
-      "CreditorAccount": {
-        "SchemeName": "UK.OBIE.SortCodeAccountNumber",
-        "Identification": "08080021325698",
-        "Name": "ACME Inc",
-        "SecondaryIdentification": "0002"
-      },
-      "RemittanceInformation": {
-        "Reference": "FRESCO-101",
-        "Unstructured": "Internal ops code 5120101"
+    "PaymentAgreement": {
+      "ValidFromDateTime": "2017-06-05T15:15:13+00:00",
+      "ValidToDateTime": "2020-06-05T15:15:13+00:00",
+      "Reference": "Mandatory reference",
+      "DebtorAccount": [
+        {
+          "SchemeName": "UK.OBIE.IBAN",
+          "Identification": "GB76LOYD30949301273801",
+          "SecondaryIdentification": "Roll 56988"
+        }
+      ],
+      "CreditorAccounts": {
+          "SchemeName": "SortCodeAccountNumber",
+          "Identification": "30949330000010",
+          "SecondaryIdentification": "Roll 90210"
+        }
+      ,
+      "ControlParameters": {
+        "MaximumIndividualAmount": {
+          "Amount": "165.88",
+          "Currency": "GBP"
+        },
+        "MaximumCumulativeAmount": {
+          "Amount": "1000",
+          "Currency": "GBP"
+        }
       }
     }
   },
@@ -285,22 +336,32 @@ Content-Type: application/json
     "CreationDateTime": "2017-06-05T15:15:13+00:00",
     "StatusUpdateDateTime": "2017-06-05T15:15:13+00:00",
     "ReadRefundAccount": "Yes",
-    "Initiation": {
-      "InstructionIdentification": "ACME412",
-      "EndToEndIdentification": "FRESCO.21302.GFX.20",
-      "InstructedAmount": {
-        "Amount": "165.88",
-        "Currency": "GBP"
-      },
-      "CreditorAccount": {
-        "SchemeName": "UK.OBIE.SortCodeAccountNumber",
-        "Identification": "08080021325698",
-        "Name": "ACME Inc",
-        "SecondaryIdentification": "0002"
-      },
-      "RemittanceInformation": {
-        "Reference": "FRESCO-101",
-        "Unstructured": "Internal ops code 5120101"
+     "PaymentAgreement": {
+      "ValidFromDateTime": "2017-06-05T15:15:13+00:00",
+      "ValidToDateTime": "2020-06-05T15:15:13+00:00",
+      "Reference": "Mandatory reference",
+      "DebtorAccount": [
+        {
+          "SchemeName": "UK.OBIE.IBAN",
+          "Identification": "GB76LOYD30949301273801",
+          "SecondaryIdentification": "Roll 56988"
+        }
+      ],
+      "CreditorAccounts": {
+          "SchemeName": "SortCodeAccountNumber",
+          "Identification": "30949330000010",
+          "SecondaryIdentification": "Roll 90210"
+        }
+      ,
+      "ControlParameters": {
+        "MaximumIndividualAmount": {
+          "Amount": "165.88",
+          "Currency": "GBP"
+        },
+        "MaximumCumulativeAmount": {
+          "Amount": "1000",
+          "Currency": "GBP"
+        }
       }
     }
   },
@@ -324,7 +385,7 @@ Content-Type: application/json
     }
   },
   "Links": {
-    "Self": "https://api.alphabank.com/open-banking/v3.1/pisp/payment-agreement-consents/58923"
+    "Self": "https://api.alphabank.com/open-banking/v1.0/vrp/payment-agreement-consents/58923"
   },
   "Meta": {}
 }
@@ -360,26 +421,33 @@ Content-Type: application/json
     "CreationDateTime": "2017-06-05T15:15:13+00:00",
     "StatusUpdateDateTime": "2017-06-05T15:15:22+00:00",
     "ReadRefundAccount": "Yes",
-    "Initiation": {
-      "InstructionIdentification": "ACME412",
-      "EndToEndIdentification": "FRESCO.21302.GFX.20",
-      "InstructedAmount": {
-        "Amount": "165.88",
-        "Currency": "GBP"
-      },
-      "CreditorAccount": {
-        "SchemeName": "UK.OBIE.SortCodeAccountNumber",
-        "Identification": "08080021325698",
-        "Name": "ACME Inc",
-        "SecondaryIdentification": "0002"
-      },
-      "RemittanceInformation": {
-        "Reference": "FRESCO-101",
-        "Unstructured": "Internal ops code 5120101"
+     "PaymentAgreement": {
+      "ValidFromDateTime": "2017-06-05T15:15:13+00:00",
+      "ValidToDateTime": "2020-06-05T15:15:13+00:00",
+      "Reference": "Mandatory reference",
+      "DebtorAccount": [
+        {
+          "SchemeName": "UK.OBIE.IBAN",
+          "Identification": "GB76LOYD30949301273801",
+          "SecondaryIdentification": "Roll 56988"
+        }
+      ],
+      "CreditorAccounts": {
+          "SchemeName": "SortCodeAccountNumber",
+          "Identification": "30949330000010",
+          "SecondaryIdentification": "Roll 90210"
+        }
+      ,
+      "ControlParameters": {
+        "MaximumIndividualAmount": {
+          "Amount": "165.88",
+          "Currency": "GBP"
+        },
+        "MaximumCumulativeAmount": {
+          "Amount": "1000",
+          "Currency": "GBP"
+        }
       }
-    },
-    "Debtor": {
-      "Name": "D Jones"
     }
   },
   "Risk": {
@@ -402,7 +470,7 @@ Content-Type: application/json
     }
   },
   "Links": {
-    "Self": "https://api.alphabank.com/open-banking/v3.1/pisp/payment-agreement-consents/58923"
+    "Self": "https://api.alphabank.com/open-banking/v1.0/vrp/payment-agreement-consents/58923"
   },
   "Meta": {}
 }
