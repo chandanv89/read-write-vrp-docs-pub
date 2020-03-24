@@ -1,8 +1,42 @@
-# Domestic Recurring Payments - v1.0.0-draft1 <!-- omit in toc -->
+# Domestic Payments - v1.0.0-draft1 <!-- omit in toc -->
+
+<!-- start-toc -->
+- [Overview](#overview)
+- [Endpoints](#endpoints)
+  - [POST /payment-agreement-consents/{ConsentId}/domestic-payments](#post-payment-agreement-consentsconsentiddomestic-payments)
+  - [POST /domestic-payments](#post-domestic-payments)
+    - [Status](#status)
+  - [GET /domestic-payments/{DomesticPaymentId}](#get-domestic-paymentsdomesticpaymentid)
+    - [Status](#status-1)
+  - [GET /domestic-payments/{DomesticPaymentId}/payment-details](#get-domestic-paymentsdomesticpaymentidpayment-details)
+    - [Status](#status-2)
+  - [State Model](#state-model)
+    - [Payment Order](#payment-order)
+      - [Multiple Authorisation](#multiple-authorisation)
+- [Data Model](#data-model)
+  - [Domestic Payment - Request](#domestic-payment---request)
+    - [UML Diagram](#uml-diagram)
+    - [Notes](#notes)
+    - [Data Dictionary](#data-dictionary)
+  - [Domestic Payment - Response](#domestic-payment---response)
+    - [UML Diagram](#uml-diagram-1)
+    - [Notes](#notes-1)
+    - [Data Dictionary](#data-dictionary-1)
+  - [Domestic Payment Order - Payment Details - Response](#domestic-payment-order---payment-details---response)
+    - [UML Diagram](#uml-diagram-2)
+    - [Data Dictionary](#data-dictionary-2)
+- [Usage Examples](#usage-examples)
+  - [POST /domestic-payments](#post-domestic-payments-1)
+    - [Request](#request)
+    - [Response](#response)
+  - [GET /domestic-payments/{DomesticPaymentId}](#get-domestic-paymentsdomesticpaymentid-1)
+    - [Request](#request-1)
+    - [Response](#response-1)
+<!-- end-toc -->
 
 ## Overview
 
-The Domestic Payments resource is used by a PISP to initiate a Domestic Payment.
+The Domestic Payments resource is used by a TPP to initiate a Domestic Payment, under an Authorised Payment Agreement Consent.
 
 This resource description should be read in conjunction with a compatible Payment Initiation API Profile.
 
@@ -10,22 +44,24 @@ This resource description should be read in conjunction with a compatible Paymen
 
 | Resource |HTTP Operation |Endpoint |Mandatory ? |Scope |Grant Type |Message Signing |Idempotency Key |Request Object |Response Object |
 | -------- |-------------- |-------- |----------- |----- |---------- |--------------- |--------------- |-------------- |--------------- |
-| domestic-payments |POST |POST /domestic-payments |Mandatory |payments |Authorization Code |Signed Request Signed Response |Yes |OBWriteDomestic2 |OBWriteDomesticResponse5 |
+| domestic-payments |POST |POST /payment-agreement-consents/{ConsentId}/domestic-payments | Conditional |payments |Authorization Code |Signed Request Signed Response |Yes |OBWriteDomestic2 |OBWriteDomesticResponse5 |
 | domestic-payments |GET |GET /domestic-payments/{DomesticPaymentId} |Mandatory |payments |Client Credentials |Signed Response |No |NA |OBWriteDomesticResponse5 |
 | payment-details |GET |GET /domestic-payments/{DomesticPaymentId}/payment-details |Optional |payments |Client Credentials |Signed Response |No |NA |OBWritePaymentDetailsResponse1 |
 
+### POST /payment-agreement-consents/{ConsentId}/domestic-payments
 ### POST /domestic-payments
 
-Once the domestic-payment-consent has been authorised by the PSU, the PISP can proceed to submitting the domestic-payment for processing:
+Once the payment-agreement-consent has been authorised by the PSU, the TPP can proceed to submitting the domestic-payment for processing.
+An ASPSP can chose between implementing a dedicated URI `/payment-agreement-consents/{ConsentId}/domestic-payments` endpoint, or the same PISP endpoint - `/domestic-payments`, with a documented mechanism on how they would differentiate the "Payment Agreement- Domestic Payment" Orders vs "Domestic Payment Consent - Payment Orders". 
 
-* This is done by making a POST request to the **domestic-payments** endpoint.
-* This request is an instruction to the ASPSP to begin the domestic single immediate payment journey. The domestic payment must be submitted immediately, however, there are some scenarios where the domestic payment may not be executed immediately (e.g., busy periods at the ASPSP).
-* The PISP **must** ensure that the Initiation and Risk sections of the domestic-payment match the corresponding Initiation and Risk sections of the domestic-payment-consent resource. If the two do not match, the ASPSP must not process the request and **must** respond with a 400 (Bad Request).
+* This is done by making a POST request to the **domestic-payments** endpoint, accessible under a Payment Agreement specific URL.
+* This request is an instruction to the ASPSP to begin the domestic single immediate payment journey. The domestic payment must be executed immediately, however, there are some scenarios where the domestic payment may not be executed immediately (e.g., busy periods at the ASPSP).
+* The TPP **must** ensure that the Initiation and Risk sections of the domestic-payment must match the corresponding Parameters specified in the payment-agreement-consent resource. If the two do not match, the ASPSP must not process the request and **must** respond with a 400 (Bad Request).
 * Any operations on the domestic-payment resource will not result in a status change for the domestic-payment resource.
 
 #### Status
 
-A domestic-payment can only be created if its corresponding domestic-payment-consent resource has the status of "Authorised". 
+A domestic-payment can only be created if its corresponding payment-agreement-consent resource has the status of "Authorised". 
 
 The domestic-payment resource that is created successfully must have one of the following PaymentStatusCode code-set enumerations:
 
@@ -40,7 +76,7 @@ The domestic-payment resource that is created successfully must have one of the 
 
 ### GET /domestic-payments/{DomesticPaymentId}
 
-A PISP can retrieve the domestic-payment to check its status.
+Once the Domestic Payment order is created by any mechanism specified by the ASPSP, a TPP can retrieve the domestic-payment to check its status, via this endpoint. To facililtate this the DomesticPaymentId must be a unique Payment Order Id across VRP and Payment Initiation API.
 
 #### Status
 
@@ -57,7 +93,7 @@ The domestic-payment resource must have one of the following PaymentStatusCode c
 
 ### GET /domestic-payments/{DomesticPaymentId}/payment-details
 
-A PISP can retrieve the Details of the underlying payment transaction via this endpoint. This resource allows ASPSPs to return richer list of Payment Statuses, and if available payment scheme related statuses.
+A TPP can retrieve the Details of the underlying payment transaction via this endpoint. This resource allows ASPSPs to return richer list of Payment Statuses, and if available payment scheme related statuses.
 
 #### Status
 
@@ -107,27 +143,11 @@ The definitions for the status:
 
 ##### Multiple Authorisation
 
-If the payment-order requires multiple authorisations - the Status of the multiple authorisations will be updated in the MultiAuthorisation object.
-
-![Multi Authorisation Status](./images/image2018-6-29_16-36-34.png)
-
-The definitions for the status:
-
-|  |Status |Status Description |
-|-- |------ |------------------ |
-| 1 |AwaitingFurtherAuthorisation |The payment-order resource is awaiting further authorisation. |
-| 2 |Rejected |The payment-order resource has been rejected by an authoriser. |
-| 3 |Authorised |The payment-order resource has been successfully authorised by all required authorisers.|
+TBC
 
 ## Data Model
 
 The data dictionary section gives the detail on the payload content for the Domestic Payment API flows.
-
-### Reused Classes
-
-#### OBDomestic2
-
-The OBDomestic2 class is defined in the [domestic-payment-consents](./domestic-payment-consents.md#obdomestic2) page.
 
 ### Domestic Payment - Request
 
@@ -143,10 +163,8 @@ The OBWriteDomestic2 object will be used for a call to:
 
 The domestic-payment **request** object contains the:
 
-* ConsentId.
-* The full Initiation and Risk objects from the domestic-payment-consent  request.
-
-The **Initiation** and **Risk** sections of the domestic-payment request **must** match the **Initiation** and **Risk** sections of the corresponding domestic-payment-consent request.
+* ConsentId of the payment-agreement-consent.
+* The **Initiation** section attributes must match and must be within the bounds of the **Control Parameters** specified in the domestic-agreement-consent request.
 
 #### Data Dictionary
 
@@ -179,11 +197,8 @@ The domestic-payment **response** object contains the:
 * Status and StatusUpdateDateTime of the domestic-payment resource.
 * ExpectedExecutionDateTime for the domestic-payment resource.
 * ExpectedSettlementDateTime for the domestic-payment resource.
-* Refund account details, if requested by PISP as part of the domestic-payment-consents resource.
+* Different from PISP Payment Orders, the Refund account details, may not be provided, as the TPP always has the Debtor Account Details.
 * Charges array for the breakdown of applicable ASPSP charges.
-* The Initiation object from the domestic-payment-consent.
-* The MultiAuthorisation object if the domestic-payment resource requires multiple authorisations.
-* An ASPSP should conditionally provide `Debtor/Name` in the Payment Order Response, even when the Payer didn't provide the Debtor Account via PISP.
 
 #### Data Dictionary
 
