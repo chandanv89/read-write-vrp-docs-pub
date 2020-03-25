@@ -8,11 +8,10 @@
 
 The Payment Agreement API Profile describes the flows and common functionality for the Payment Agrement Setup and subsequent Payment Order submissions, which allows a Third Party Provider ('TPP') to:
 
-- Register an intent to **stage** a payment-agreement consent.
-- Optionally confirm available funds for a payment-order of
-  - Specified amount
+- **Stage** a payment-agreement consent.
+- Optionally **confirm available funds** for a payment-order of a specified amount
 - Subsequently **submit** the payment-order for processing.
-- Optionally retrieve the status of a payment-agreement **consent** and/or payment-order **resource**.
+- Optionally **retrieve the status** of a payment-agreement consents and payment-orders.
 
 This profile should be read in conjunction with a compatible Read/Write Data API Profile which provides a description of the elements that are common across all the Read/Write Data APIs, and compatible individual resources.
 
