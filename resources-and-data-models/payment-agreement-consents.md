@@ -1,4 +1,4 @@
-# Domestic Payments Consents - v3.1.5 <!-- omit in toc -->
+# payment agreement consentss - v3.1.5 <!-- omit in toc -->
 
 <!-- start-toc -->
 - [Overview](#overview)
@@ -9,21 +9,21 @@
     - [Status](#status-1)
   - [POST /payment-agreement-consents/{ConsentId}/funds-confirmation](#post-payment-agreement-consentsconsentidfunds-confirmation)
   - [State Model](#state-model)
-    - [Payment Agreement Consent](#payment-agreement-consent)
+    - [payment agreement consents](#payment-agreement-consents)
 - [Data Model](#data-model)
-  - [Payment Agreement Consent - Request](#payment-agreement-consent---request)
+  - [payment agreement consents - Request](#payment-agreement-consents---request)
     - [UML Diagram](#uml-diagram)
     - [Notes](#notes)
     - [Data Dictionary](#data-dictionary)
-  - [Payment Agreement Consent - Response](#payment-agreement-consent---response)
+  - [payment agreement consents - Response](#payment-agreement-consents---response)
     - [UML Diagram](#uml-diagram-1)
     - [Notes](#notes-1)
     - [Data Dictionary](#data-dictionary-1)
-  - [Payment Agreement Consent Confirmation of Funds - Request](#payment-agreement-consent-confirmation-of-funds---request)
+  - [payment agreement consents Confirmation of Funds - Request](#payment-agreement-consents-confirmation-of-funds---request)
     - [UML Diagram](#uml-diagram-2)
     - [Notes](#notes-2)
     - [Data Dictionary](#data-dictionary-2)
-  - [Payment Agreement Consent Confirmation of Funds - Response](#payment-agreement-consent-confirmation-of-funds---response)
+  - [payment agreement consents Confirmation of Funds - Response](#payment-agreement-consents-confirmation-of-funds---response)
     - [UML Diagram](#uml-diagram-3)
     - [Notes](#notes-3)
     - [Data Dictionary](#data-dictionary-3)
@@ -38,9 +38,9 @@
 
 ## Overview
 
-The Payment Agreement Consent resource is used by a TPP to register an intent to initiate a series of Immediate Payments, but within the control parameters of the Consent agreed with the PSU.
+The payment agreement consents resource is used by a TPP to register a consent to initiate one or more of payment-orders, but within the control parameters of the Consent agreed with the PSU.
 
-This resource description should be read in conjunction with a compatible Payment Agreements API Profile.
+This resource description should be read in conjunction with a compatible Variable Recurring Payments API Profile.
 
 ## Endpoints
 
@@ -54,15 +54,15 @@ This resource description should be read in conjunction with a compatible Paymen
 
 ### POST /payment-agreement-consents
 
-The API endpoint allows the TPP to ask an ASPSP to create a new **payment-agreement-consent*- resource.
+The API endpoint allows the TPP to ask an ASPSP to create a new **payment agreement consents*- resource.
 
-- The POST action indicates to the ASPSP that a payment agreement consent has been staged. At this point, although request payload contains Debtor Accounts, but the PSU may not have been identified by the ASPSP.
+- The POST action indicates to the ASPSP that a payment agreement consents has been staged. At this point, although request payload contains Debtor Accounts, but the PSU may not have been identified by the ASPSP.
 - The endpoint allows the TPP to send a copy of the consent (between PSU and TPP) to the ASPSP for the PSU to authorise.
-- The ASPSP creates the **payment-agreement-consent** resource and responds with a unique ConsentId to refer to the resource.
+- The ASPSP creates the **payment agreement consents** resource and responds with a unique ConsentId to refer to the resource.
 
 #### Status
 
-The default/initial Status of the resource is set to &quot;AwaitingAuthorisation&quot; immediately after the payment-agreement-consent has been created. If the parameters specified by the TPP in this resource aren't valid, or fail any rules, the ASPSP must throw 400 Bad Request with appropriate message, instead of creating a Resource with an alternative status.
+The default/initial Status of the resource is set to &quot;AwaitingAuthorisation&quot; immediately after the payment agreement consents has been created. If the parameters specified by the TPP in this resource aren't valid, or fail any rules, the ASPSP must throw 400 Bad Request with appropriate message, instead of creating a Resource with an alternative status.
 
 | Status |
 | ------ |
@@ -74,13 +74,13 @@ A TPP can retrieve a payment consent resource that they have created to check it
 
 #### Status
 
-Once the PSU authorises the payment-agreement-consent resource - the Status of the payment--agreement-consent resource will be set to &quot;Authorised&quot;.
+Once the PSU authorises the payment agreement consents resource - the Status of the payment--agreement-consent resource will be set to &quot;Authorised&quot;.
 
-If the PSU rejects the consent or the payment-agreement-consent has failed some other ASPSP validation, the Status will be set to &quot;Rejected&quot;.
+If the PSU rejects the consent or the payment agreement consents has failed some other ASPSP validation, the Status will be set to &quot;Rejected&quot;.
 
-Once a payment-agreement-consent has gone past valid time period specified by the PSU, the Status of the payment-agreement-consent will be set to &quot;Expired&quot;.
+Once a payment agreement consents has gone past valid time period specified by the PSU, the Status of the payment agreement consents will be set to &quot;Expired&quot;.
 
-The available status codes for the payment-agreement-consent resource are:
+The available status codes for the payment agreement consents resource are:
 
 | Status |
 | ------ |
@@ -92,18 +92,18 @@ The available status codes for the payment-agreement-consent resource are:
 
 ### POST /payment-agreement-consents/{ConsentId}/funds-confirmation
 
-This API endpoint allows the TPP to ask an ASPSP to confirm funds on a **payment-agreement-consent** resource, for the Debtor Accounts provided to the TPP by the ASPSP during the staging of the consent.
+This API endpoint allows the TPP to ask an ASPSP to confirm funds on a **payment agreement consents** resource, for the Debtor Accounts provided to the TPP by the ASPSP during the staging of the consent.
 
-- An ASPSP can only respond to a funds confirmation request if the **payment-agreement-consent** resource has an Authorised status. If the status is not Authorised, an ASPSP must respond with a 400 (Bad Request) and a ```UK.OBIE.Resource.InvalidConsentStatus``` error code.
-- Confirmation of funds requests do not affect the status of the **payment-agreement-consent** resource.
+- An ASPSP can only respond to a funds confirmation request if the **payment-agreement-consents** resource has an Authorised status. If the status is not Authorised, an ASPSP must respond with a 400 (Bad Request) and a ```UK.OBIE.Resource.InvalidConsentStatus``` error code.
+- Confirmation of funds requests do not affect the status of the **payment agreement consents** resource.
 - In case of a Payment Agreements Consent with multiple Debtor Accounts, the TPP must always specify the Debtor Account(s), against which the Confirmation of funds is requested.
 
 ###  PATCH /payment-agreement-consents/{ConsentId}
 
-This endpoint can be used by the TPP to modify the Payment Agreement Consent, partially, i.e. elements of the consent. 
+This endpoint can be used by the TPP to modify the payment agreement consents, partially, i.e. elements of the consent.
 
 - An ASPSP may request the TPP to get PSU's authorisation for such a change. In such a case:
-  - ASPSP must update the payment-agreement-consent status to `AwaitingAuthorisation`, and
+  - ASPSP must update the payment agreement consents status to `AwaitingAuthorisation`, and
   - ASPSP must respond back with HTTP Status 302, indicating to the TPP that a PSU Authentication is required.
 
 This endpoint can be used by the TPP, in case of PSU Revoking the Consent, via TPP's channel.
@@ -111,11 +111,11 @@ The TPP can sent the request to only update the Status to be Revoked.
 
 ### State Model
 
-#### Payment Agreement Consent
+#### payment agreement consents
 
-The state model for the payment-agreement-consent resource follows the generic consent state model. However, does not use the Consumed status, as the consent for a payment-agreement is a long-lived consent. Instead, it has a new status - Expired.
+The state model for the payment agreement consents resource follows the generic consent state model. However, does not use the Consumed status, as the consent for a payment-agreement is a long-lived consent. Instead, it has a new status - Expired.
 
-!["Payment Agreement Consent Status"](./images/VRP-State-Diagram.png)
+!["payment agreement consents Status"](./images/VRP-State-Diagram.png)
 
 The definitions for the Status:
 
@@ -125,25 +125,25 @@ The definitions for the Status:
 | 2 |Rejected |The consent resource has been rejected. |
 | 3 |Authorised |The consent resource has been successfully authorised. |
 | 4 |Revoked |The consent resource has been revoked by the PSU, via ASPSP's online channel. |
-| 5 |Expired |The consented duration of the Payment Agreement Consent is elapsed, and it cannot be further modified, or reauthenticated by the PSU. |
+| 5 |Expired |The consented duration of the payment agreement consents is elapsed, and it cannot be further modified, or reauthenticated by the PSU. |
 
 ## Data Model
 
 The data dictionary section gives the detail on the payload content for the Payment Agreement API flows.
 
-### Payment Agreement Consent - Request
+### payment agreement consents - Request
 
 The OBWritePaymentAgreementConsent1 object will be used for the call to:
 
 - POST /payment-agreement-consents
-  
+
 #### UML Diagram
 
 ![OBWritePaymentAgreementConsent1](./images/OBWritePaymentAgreementConsent1.gif)
 
 #### Notes
 
-The payment-agreement-consent **request** contains these objects:
+The payment agreement consents **request** contains these objects:
 
 - PaymentAgreement
   - One or more Debtor Accounts
@@ -155,7 +155,7 @@ The payment-agreement-consent **request** contains these objects:
 
 TBC
 
-### Payment Agreement Consent - Response
+### payment agreement consents - Response
 
 The OBWritePaymentAgreementConsentResponse1 object will be used for a response to a call to:
 
@@ -168,20 +168,20 @@ The OBWritePaymentAgreementConsentResponse1 object will be used for a response t
 
 #### Notes
 
-Them payment-agreement-consent **response** contains the full **original** payload from the payment-agreement-consent **request**, with the additional elements below:
+Them payment agreement consents **response** contains the full **original** payload from the payment agreement consents **request**, with the additional elements below:
 
 - ConsentId
-- CreationDateTime the payment-agreement-consent resource was created.
-- Status and StatusUpdateDateTime of the payment-agreement-consent resource.
+- CreationDateTime the payment agreement consents resource was created.
+- Status and StatusUpdateDateTime of the payment agreement consents resource.
 - PaymentAgreement played back to the TPP.
 
 #### Data Dictionary
 
 TBC
 
-### Payment Agreement Consent Confirmation of Funds - Request
+### payment agreement consents Confirmation of Funds - Request
 
-The OBWritePAFundsConfirmationRequest1 object must be used to request funds availability for a specific amount, across the Debtor Accounts included in the Payment Agreement Consent.
+The OBWritePAFundsConfirmationRequest1 object must be used to request funds availability for a specific amount, across the Debtor Accounts included in the payment agreement consents.
 The TPP must specify at least 1 debtor account, and the specified debtor accounts must be from the set of debtor account(s), specified and later authorised by the PSU.
 
 - POST /payment-agreement-consents/{ConsentId}/funds-confirmation
@@ -194,11 +194,11 @@ The TPP must specify at least 1 debtor account, and the specified debtor account
 
 TBC
 
-#### Data Dictionary 
+#### Data Dictionary
 
 TBC
 
-### Payment Agreement Consent Confirmation of Funds - Response
+### payment agreement consents Confirmation of Funds - Response
 
 The OBWritePAFundsConfirmationResponse1 object will be used for a response to a call to:
 
@@ -216,9 +216,9 @@ The confirmation of funds response contains the result of a funds availability c
 
 TBC
 
-### Payment Agreement Consent Update - Request
+### payment agreement consents Update - Request
 
-The OBWritePAFundsConfirmationRequest1 object must be used to request funds availability for a specific amount, across the Debtor Accounts included in the Payment Agreement Consent.
+The OBWritePAFundsConfirmationRequest1 object must be used to request funds availability for a specific amount, across the Debtor Accounts included in the payment agreement consents.
 The TPP must specify at least 1 debtor account, and the specified debtor accounts must be from the set of debtor account(s), specified and later authorised by the PSU.
 
 - POST /payment-agreement-consents/{ConsentId}/funds-confirmation
@@ -231,11 +231,11 @@ The TPP must specify at least 1 debtor account, and the specified debtor account
 
 TBC
 
-#### Data Dictionary 
+#### Data Dictionary
 
 TBC
 
-### Payment Agreement Consent Update - Response
+### payment agreement consents Update - Response
 
 The response to the update request could be one of the following HTTP Status codes, no payload is required.
 

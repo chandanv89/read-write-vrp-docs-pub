@@ -4,7 +4,7 @@ The OBIE VRP API specification describes a collection of RESTful APIs that enabl
 
 ## Profiles
 
-[Payment Agreement API](./profiles/payment-agreements.md)
+[Payment Agreement API](./profiles/vrp-profile.md)
 
 ## Resources and Data Models
 
