@@ -1,4 +1,4 @@
-# payment agreement consentss - v3.1.5 <!-- omit in toc -->
+# Payment Agreement Consents - v1.0.0-draft1 <!-- omit in toc -->
 
 <!-- start-toc -->
 - [Overview](#overview)
@@ -8,25 +8,31 @@
   - [GET /payment-agreement-consents/{ConsentId}](#get-payment-agreement-consentsconsentid)
     - [Status](#status-1)
   - [POST /payment-agreement-consents/{ConsentId}/funds-confirmation](#post-payment-agreement-consentsconsentidfunds-confirmation)
+  - [PATCH /payment-agreement-consents/{ConsentId}](#patch-payment-agreement-consentsconsentid)
   - [State Model](#state-model)
-    - [payment agreement consents](#payment-agreement-consents)
+    - [Payment Agreement Consents](#payment-agreement-consents)
 - [Data Model](#data-model)
-  - [payment agreement consents - Request](#payment-agreement-consents---request)
+  - [Payment Agreement Consents - Request](#payment-agreement-consents---request)
     - [UML Diagram](#uml-diagram)
     - [Notes](#notes)
     - [Data Dictionary](#data-dictionary)
-  - [payment agreement consents - Response](#payment-agreement-consents---response)
+  - [Payment Agreement Consents - Response](#payment-agreement-consents---response)
     - [UML Diagram](#uml-diagram-1)
     - [Notes](#notes-1)
     - [Data Dictionary](#data-dictionary-1)
-  - [payment agreement consents Confirmation of Funds - Request](#payment-agreement-consents-confirmation-of-funds---request)
+  - [Payment Agreement Consents - Confirmation of Funds - Request](#payment-agreement-consents---confirmation-of-funds---request)
     - [UML Diagram](#uml-diagram-2)
     - [Notes](#notes-2)
     - [Data Dictionary](#data-dictionary-2)
-  - [payment agreement consents Confirmation of Funds - Response](#payment-agreement-consents-confirmation-of-funds---response)
+  - [Payment Agreement Consents - Confirmation of Funds - Response](#payment-agreement-consents---confirmation-of-funds---response)
     - [UML Diagram](#uml-diagram-3)
     - [Notes](#notes-3)
     - [Data Dictionary](#data-dictionary-3)
+  - [Payment Agreement Consents Update - Request](#payment-agreement-consents-update---request)
+    - [UML Diagram](#uml-diagram-4)
+    - [Notes](#notes-4)
+    - [Data Dictionary](#data-dictionary-4)
+  - [Payment Agreement Consents Update - Response](#payment-agreement-consents-update---response)
 - [Usage Examples](#usage-examples)
   - [POST /payment-agreement-consents](#post-payment-agreement-consents-1)
     - [Request](#request)
@@ -111,7 +117,7 @@ The TPP can sent the request to only update the Status to be Revoked.
 
 ### State Model
 
-#### payment agreement consents
+#### Payment Agreement Consents
 
 The state model for the payment agreement consents resource follows the generic consent state model. However, does not use the Consumed status, as the consent for a payment-agreement is a long-lived consent. Instead, it has a new status - Expired.
 
@@ -131,7 +137,7 @@ The definitions for the Status:
 
 The data dictionary section gives the detail on the payload content for the Payment Agreement API flows.
 
-### payment agreement consents - Request
+### Payment Agreement Consents - Request
 
 The OBWritePaymentAgreementConsent1 object will be used for the call to:
 
@@ -153,9 +159,65 @@ The payment agreement consents **request** contains these objects:
 
 #### Data Dictionary
 
-TBC
+| Name |Occurrence |XPath |EnhancedDefinition |Class |Codes |Pattern |
+| ---- |---------- |----- |------------------ |----- |----- |------- |
+|OBWritePaymentAgreementConsent1        |   |OBWritePaymentAgreementConsent1    ||OBWritePaymentAgreementConsent1    |           | |
+|Data   |0..1|OBWritePaymentAgreementConsent1/Data||OBWriteDataPaymentAgreementConsent1|           | |
+|PaymentAgreement       |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement              |The Mandate payload is sent by the initiating party to the ASPSP. It is used to request a mandate to move funds from the debtor account to a creditor.         |OBPaymentAgreement1|           | |
+|ValidFromDateTime      |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ValidFromDateTime |Start date time for which the agreement remains valid.    |ISODateTime        |           | |
+|ValidToDateTime        |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ValidToDateTime   |End date time for which the agreement remains valid. |ISODateTime        |           | |
+|Reference              |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/Reference    |Unique reference, as assigned by the creditor, to unambiguously refer to the mandate.     |Max35Text          |           | |
+|ControlParameters      |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters ||OBControlParameters1|           | |
+|MaximumPaymentsAllowedPerConsent       |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/MaximumPaymentsAllowedPerConsent|Maximum number of instructions to be created and processed for the agreement until new Consent required.  |DecimalNumber      |           | |
+|MaximumCumulativeAmount|0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/MaximumCumulativeAmount         |Maximum amount of money to be moved between the debtor and creditor cumulative for the duration of the agreement, before deduction of charges, expressed in the currency as ordered by the initiating party.        |ActiveOrHistoricCurrencyAndAmount  |           | |
+|Currency|1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/MaximumCumulativeAmount/Currency|A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".   |ActiveOrHistoricCurrencyCode       |           |^[A-Z]{3,3}$          |
+|MaximumIndividualAmount|0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/MaximumIndividualAmount         |Maximum amount of money to be moved between the debtor and creditor in an individual payment transaction, before deduction of charges, expressed in the currency as ordered by the initiating party.|ActiveOrHistoricCurrencyAndAmount  |           | |
+|Currency|1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/MaximumIndividualAmount/Currency|A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".   |ActiveOrHistoricCurrencyCode       |           |^[A-Z]{3,3}$          |
+|PeriodicControl        |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/PeriodicControl ||OBPeriodicControl1 |           | |
+|AmountPerPeriod        |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/PeriodicControl/AmountPerPeriod |Maximum amount of money to be moved between the debtor and creditor during the period specified, before deduction of charges, expressed in the currency as ordered by the initiating party.         |ActiveOrHistoricCurrencyAndAmount  |           | |
+|Currency|1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/PeriodicControl/AmountPerPeriod/Currency        |A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".   |ActiveOrHistoricCurrencyCode       |           |^[A-Z]{3,3}$          |
+|CountPerPeriod         |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/PeriodicControl/CountPerPeriod  |Number of instructions to be created and processed during the specified period            |DecimalNumber      |           | |
+|Period |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/PeriodicControl/Period          |Period for which the number of instructions are to be created and processed.              |Frequency6Code     |ADHO DAIL FRTN INDA MIAN MNTH QURT WEEK YEAR    | |
+|DebtorAccounts         |1..n|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts    |Unambiguous identification of the account of the debtor to which a debit entry will be made as a result of the transaction.    |OBCashAccountDebtor4|           | |
+|SchemeName             |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts/SchemeName         |Name of the identification scheme, in a coded form as published in an external list.      |OBExternalAccountIdentification4Code|UK.OBIE.BBAN UK.OBIE.IBAN UK.OBIE.PAN UK.OBIE.Paym UK.OBIE.SortCodeAccountNumber| |
+|Identification         |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts/Identification     |Identification assigned by an institution to identify an account. This identification is known by the account owner.           |Max256Text         |           | |
+|Name   |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts/Name|Name of the account, as assigned by the account servicing institution.  Usage: The account name is the name or names of the account owner(s) represented at an account level. The account name is not the product name or the nickname of the account.   |Max70Text          |           | |
+|SecondaryIdentification|0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts/SecondaryIdentification            |This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination).             |Max34Text          |           | |
+|CreditorAgent          |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent|Financial institution servicing an account for the creditor.              |OBBranchAndFinancialInstitutionIdentification6     |           | |
+|SchemeName             |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/SchemeName          |Name of the identification scheme, in a coded form as published in an external list.      |OBExternalFinancialInstitutionIdentification4Code  |UK.OBIE.BICFI              | |
+|Identification         |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/Identification      |Unique and unambiguous identification of a financial institution or a branch of a financial institution.  |Max35Text          |           | |
+|Name   |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/Name|Name by which an agent is known and which is usually used to identify that agent.         |Max140Text         |           | |
+|PostalAddress          |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress       |Information that locates and identifies a specific address, as defined by postal services.|OBPostalAddress6   |           | |
+|AddressType            |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/AddressType           |Identifies the nature of the postal address.         |OBAddressTypeCode  |Business Correspondence DeliveryTo MailTo POBox Postal Residential Statement    | |
+|Department             |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/Department            |Identification of a division of a large organisation or building.         |Max70Text          |           | |
+|SubDepartment          |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/SubDepartment         |Identification of a sub-division of a large organisation or building.     |Max70Text          |           | |
+|StreetName             |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/StreetName            |Name of a street or thoroughfare.    |Max70Text          |           | |
+|BuildingNumber         |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/BuildingNumber        |Number that identifies the position of a building on a street.            |Max16Text          |           | |
+|PostCode|0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/PostCode              |Identifier consisting of a group of letters and/or numbers that is added to a postal address to assist the sorting of mail.    |Max16Text          |           | |
+|TownName|0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/TownName              |Name of a built-up area, with defined boundaries, and a local government. |Max35Text          |           | |
+|CountrySubDivision     |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/CountrySubDivision    |Identifies a subdivision of a country such as state, region, county.      |Max35Text          |           | |
+|Country|0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/Country|Nation with its own government.      |CountryCode        |           |^[A-Z]{2,2}$          |
+|AddressLine            |0..7|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAgent/PostalAddress/AddressLine           |Information that locates and identifies a specific address, as defined by postal services, presented in free format text.      |Max70Text          |           | |
+|CreditorAccount        |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAccount   |Unambiguous identification of the account of the creditor to which a credit entry will be posted as a result of the payment transaction.       |OBCashAccountCreditor3             |           | |
+|SchemeName             |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAccount/SchemeName        |Name of the identification scheme, in a coded form as published in an external list.      |OBExternalAccountIdentification4Code|UK.OBIE.BBAN UK.OBIE.IBAN UK.OBIE.PAN UK.OBIE.Paym UK.OBIE.SortCodeAccountNumber| |
+|Identification         |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAccount/Identification    |Identification assigned by an institution to identify an account. This identification is known by the account owner.           |Max256Text         |           | |
+|Name   |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAccount/Name              |Name of the account, as assigned by the account servicing institution, in agreement with the account owner in order to provide an additional means of identification of the account.  Usage: The account name is different from the account owner name. The account name is used in certain user communities to provide a means of identifying the account, in addition to the account owner's identity and the account number. OB: No name validation is expected for confirmation of payee.|Max70Text          |           | |
+|SecondaryIdentification|0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/CreditorAccount/SecondaryIdentification           |This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination).             |Max34Text          |           | |
+|Risk   |0..1|OBWritePaymentAgreementConsent1/Risk|The Risk section is sent by the initiating party to the ASPSP. It is used to specify additional details for risk scoring for Payments.         |OBRisk1            |           | |
+|PaymentContextCode     |0..1|OBWritePaymentAgreementConsent1/Risk/PaymentContextCode            |Specifies the payment context        |OBExternalPaymentContext1Code      |BillPayment EcommerceGoods EcommerceServices Other PartyToParty | |
+|MerchantCategoryCode   |0..1|OBWritePaymentAgreementConsent1/Risk/MerchantCategoryCode          |Category code conform to ISO 18245, related to the type of services or goods the merchant provides for the transaction.        |Min3Max4Text       |           | |
+|MerchantCustomerIdentification         |0..1|OBWritePaymentAgreementConsent1/Risk/MerchantCustomerIdentification|The unique customer identifier of the PSU with the merchant.              |Max70Text          |           | |
+|DeliveryAddress        |0..1|OBWritePaymentAgreementConsent1/Risk/DeliveryAddress|Information that locates and identifies a specific address, as defined by postal services or in free format text.              |PostalAddress18    |           | |
+|AddressLine            |0..2|OBWritePaymentAgreementConsent1/Risk/DeliveryAddress/AddressLine   |Information that locates and identifies a specific address, as defined by postal services, that is presented in free format text.              |Max70Text          |           | |
+|StreetName             |0..1|OBWritePaymentAgreementConsent1/Risk/DeliveryAddress/StreetName    |Name of a street or thoroughfare.    |Max70Text          |           | |
+|BuildingNumber         |0..1|OBWritePaymentAgreementConsent1/Risk/DeliveryAddress/BuildingNumber|Number that identifies the position of a building on a street.            |Max16Text          |           | |
+|PostCode|0..1|OBWritePaymentAgreementConsent1/Risk/DeliveryAddress/PostCode      |Identifier consisting of a group of letters and/or numbers that is added to a postal address to assist the sorting of mail.    |Max16Text          |           | |
+|TownName|1..1|OBWritePaymentAgreementConsent1/Risk/DeliveryAddress/TownName      |Name of a built-up area, with defined boundaries, and a local government. |Max35Text          |           | |
+|CountrySubDivision     |0..2|OBWritePaymentAgreementConsent1/Risk/DeliveryAddress/CountrySubDivision |Identifies a subdivision of a country, for instance state, region, county.|Max35Text          |           | |
+|Country|1..1|OBWritePaymentAgreementConsent1/Risk/DeliveryAddress/Country       |Nation with its own government, occupying a particular territory.         |CountryCode        |           |^[A-Z]{2,2}$          |
 
-### payment agreement consents - Response
+
+### Payment Agreement Consents - Response
 
 The OBWritePaymentAgreementConsentResponse1 object will be used for a response to a call to:
 
@@ -177,9 +239,61 @@ Them payment agreement consents **response** contains the full **original** payl
 
 #### Data Dictionary
 
-TBC
+| Name |Occurrence |XPath |EnhancedDefinition |Class |Codes |Pattern |
+| ---- |---------- |----- |------------------ |----- |----- |------- |
+|OBWritePaymentAgreementConsentResponse1| |OBWritePaymentAgreementConsentResponse1 ||OBWritePaymentAgreementConsentResponse1            ||            |
+|Data |0..1            |OBWritePaymentAgreementConsentResponse1/Data||OBWriteDataPaymentAgreementResponse1||            |
+|PaymentAgreementId  |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreementId|OB: Unique identification as assigned by the ASPSP to uniquely identify the mandate resource.      |Max128Text   ||            |
+|CreationDateTime    |1..1            |OBWritePaymentAgreementConsentResponse1/Data/CreationDateTime  |Date and time at which the resource was created.         |ISODateTime  ||            |
+|Status              |1..1            |OBWritePaymentAgreementConsentResponse1/Data/Status        |Specifies the status of resource in code form.           |OBExternalRequestStatus2Code    |Authorised AwaitingAuthorisation Rejected Revoked Expired           |            |
+|StatusUpdateDateTime|1..1            |OBWritePaymentAgreementConsentResponse1/Data/StatusUpdateDateTime             |Date and time at which the resource status was updated.  |ISODateTime  ||            |
+|PaymentAgreement    |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement  |The Mandate payload is sent by the initiating party to the ASPSP. It is used to request a mandate to move funds from the debtor account to a creditor.              |OBPaymentAgreement1             ||            |
+|ValidFromDateTime   |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ValidFromDateTime   |Start date time for which the agreement remains valid.   |ISODateTime  ||            |
+|ValidToDateTime     |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ValidToDateTime |End date time for which the agreement remains valid.     |ISODateTime  ||            |
+|Reference           |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/Reference       |Unique reference, as assigned by the creditor, to unambiguously refer to the mandate.              |Max35Text||            |
+|ControlParameters   |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters   ||OBControlParameters1            ||            |
+|MaximumPaymentsAllowedPerConsent       |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/MaximumPaymentsAllowedPerConsent        |Maximum number of instructions to be created and processed for the agreement until new Consent required.   |DecimalNumber||            |
+|MaximumCumulativeAmount |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/MaximumCumulativeAmount  |Maximum amount of money to be moved between the debtor and creditor cumulative for the duration of the agreement, before deduction of charges, expressed in the currency as ordered by the initiating party.  |ActiveOrHistoricCurrencyAndAmount   ||            |
+|Currency            |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/MaximumCumulativeAmount/Currency        |A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".   |ActiveOrHistoricCurrencyCode    ||^[A-Z]{3,3}$|
+|MaximumIndividualAmount |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/MaximumIndividualAmount  |Maximum amount of money to be moved between the debtor and creditor in an individual payment transaction, before deduction of charges, expressed in the currency as ordered by the initiating party.          |ActiveOrHistoricCurrencyAndAmount   ||            |
+|Currency            |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/MaximumIndividualAmount/Currency        |A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".   |ActiveOrHistoricCurrencyCode    ||^[A-Z]{3,3}$|
+|PeriodicControl     |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/PeriodicControl      ||OBPeriodicControl1              ||            |
+|AmountPerPeriod     |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/PeriodicControl/AmountPerPeriod         |Maximum amount of money to be moved between the debtor and creditor during the period specified, before deduction of charges, expressed in the currency as ordered by the initiating party.|ActiveOrHistoricCurrencyAndAmount   ||            |
+|Currency            |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/PeriodicControl/AmountPerPeriod/Currency|A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".   |ActiveOrHistoricCurrencyCode    ||^[A-Z]{3,3}$|
+|CountPerPeriod      |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/PeriodicControl/CountPerPeriod          |Number of instructions to be created and processed during the specified period  |DecimalNumber||            |
+|Period              |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/ControlParameters/PeriodicControl/Period   |Period for which the number of instructions are to be created and processed.    |Frequency6Code   |ADHO DAIL FRTN INDA MIAN MNTH QURT WEEK YEAR  |            |
+|DebtorAccounts      |1..n            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/DebtorAccounts  |Unambiguous identification of the account of the debtor to which a debit entry will be made as a result of the transaction.   |OBCashAccountDebtor4            ||            |
+|SchemeName          |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/DebtorAccounts/SchemeName              |Name of the identification scheme, in a coded form as published in an external list.|OBExternalAccountIdentification4Code|UK.OBIE.BBAN UK.OBIE.IBAN UK.OBIE.PAN UK.OBIE.Paym UK.OBIE.SortCodeAccountNumber|            |
+|Identification      |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/DebtorAccounts/Identification          |Identification assigned by an institution to identify an account. This identification is known by the account owner.      |Max256Text   ||            |
+|Name |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/DebtorAccounts/Name |Name of the account, as assigned by the account servicing institution.  Usage: The account name is the name or names of the account owner(s) represented at an account level. The account name is not the product name or the nickname of the account.  |Max70Text||            |
+|SecondaryIdentification |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/DebtorAccounts/SecondaryIdentification |This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination).|Max34Text||            |
+|CreditorAgent       |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent   |Financial institution servicing an account for the creditor. |OBBranchAndFinancialInstitutionIdentification6     ||            |
+|SchemeName          |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/SchemeName|Name of the identification scheme, in a coded form as published in an external list.|OBExternalFinancialInstitutionIdentification4Code  |UK.OBIE.BICFI      |            |
+|Identification      |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/Identification           |Unique and unambiguous identification of a financial institution or a branch of a financial institution.   |Max35Text||            |
+|Name |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/Name  |Name by which an agent is known and which is usually used to identify that agent.   |Max140Text   ||            |
+|PostalAddress       |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress            |Information that locates and identifies a specific address, as defined by postal services.         |OBPostalAddress6 ||            |
+|AddressType         |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/AddressType|Identifies the nature of the postal address.             |OBAddressTypeCode|Business Correspondence DeliveryTo MailTo POBox Postal Residential Statement    |            |
+|Department          |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/Department |Identification of a division of a large organisation or building.|Max70Text||            |
+|SubDepartment       |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/SubDepartment  |Identification of a sub-division of a large organisation or building.           |Max70Text||            |
+|StreetName          |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/StreetName |Name of a street or thoroughfare.     |Max70Text||            |
+|BuildingNumber      |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/BuildingNumber |Number that identifies the position of a building on a street.   |Max16Text||            |
+|PostCode            |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/PostCode   |Identifier consisting of a group of letters and/or numbers that is added to a postal address to assist the sorting of mail.   |Max16Text||            |
+|TownName            |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/TownName   |Name of a built-up area, with defined boundaries, and a local government.       |Max35Text||            |
+|CountrySubDivision  |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/CountrySubDivision            |Identifies a subdivision of a country such as state, region, county.            |Max35Text||            |
+|Country             |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/Country    |Nation with its own government.       |CountryCode  ||`^[A-Z]{2,2}$`|
+|AddressLine         |0..7            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAgent/PostalAddress/AddressLine|Information that locates and identifies a specific address, as defined by postal services, presented in free format text. |Max70Text||            |
+|CreditorAccount     |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAccount |Unambiguous identification of the account of the creditor to which a credit entry will be posted as a result of the payment transaction.     |OBCashAccountCreditor3          ||            |
+|SchemeName          |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAccount/SchemeName             |Name of the identification scheme, in a coded form as published in an external list.|OBExternalAccountIdentification4Code|UK.OBIE.BBAN UK.OBIE.IBAN UK.OBIE.PAN UK.OBIE.Paym UK.OBIE.SortCodeAccountNumber|            |
+|Identification      |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAccount/Identification         |Identification assigned by an institution to identify an account. This identification is known by the account owner.      |Max256Text   ||            |
+|Name |1..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAccount/Name|Name of the account, as assigned by the account servicing institution, in agreement with the account owner in order to provide an additional means of identification of the account.  Usage: The account name is different from the account owner name. The account name is used in certain user communities to provide a means of identifying the account, in addition to the account owner's identity and the account number. OB: No name validation is expected for confirmation of payee.|Max70Text||            |
+|SecondaryIdentification |0..1            |OBWritePaymentAgreementConsentResponse1/Data/PaymentAgreement/CreditorAccount/SecondaryIdentification|This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination).|Max34Text||            |
+|DebtorAccount       |0..n            |OBWritePaymentAgreementConsentResponse1/Data/DebtorAccount |Provides the details to identify an account.             |OBCashAccountDebtor4            ||            |
+|SchemeName          |1..1            |OBWritePaymentAgreementConsentResponse1/Data/DebtorAccount/SchemeName         |Name of the identification scheme, in a coded form as published in an external list.|OBExternalAccountIdentification4Code|UK.OBIE.BBAN UK.OBIE.IBAN UK.OBIE.PAN UK.OBIE.Paym UK.OBIE.SortCodeAccountNumber|            |
+|Identification      |1..1            |OBWritePaymentAgreementConsentResponse1/Data/DebtorAccount/Identification     |Identification assigned by an institution to identify an account. This identification is known by the account owner.      |Max256Text   ||            |
+|Name |0..1            |OBWritePaymentAgreementConsentResponse1/Data/DebtorAccount/Name|Name of the account, as assigned by the account servicing institution.  Usage: The account name is the name or names of the account owner(s) represented at an account level. The account name is not the product name or the nickname of the account.  |Max70Text||            |
+|SecondaryIdentification |0..1            |OBWritePaymentAgreementConsentResponse1/Data/DebtorAccount/SecondaryIdentification|This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination).|Max34Text||            |
 
-### payment agreement consents Confirmation of Funds - Request
+### Payment Agreement Consents - Confirmation of Funds - Request
 
 The OBWritePAFundsConfirmationRequest1 object must be used to request funds availability for a specific amount, across the Debtor Accounts included in the payment agreement consents.
 The TPP must specify at least 1 debtor account, and the specified debtor accounts must be from the set of debtor account(s), specified and later authorised by the PSU.
@@ -192,13 +306,26 @@ The TPP must specify at least 1 debtor account, and the specified debtor account
 
 #### Notes
 
-TBC
+- None
 
 #### Data Dictionary
 
-TBC
+| Name |Occurrence |XPath |EnhancedDefinition |Class |Codes |Pattern |
+| ---- |---------- |----- |------------------ |----- |----- |------- |
+|OBWritePAFundsConfirmationRequest1     |  |OBWritePAFundsConfirmationRequest1     ||OBWritePAFundsConfirmationRequest1  |              |      |
+|Data  |1..1 |OBWritePAFundsConfirmationRequest1/Data||OBWriteDataPAFundsConfirmation1     |              |      |
+|ConsentId|1..1 |OBWritePAFundsConfirmationRequest1/Data/ConsentId     |Unique identification as assigned by the ASPSP to uniquely identify the funds confirmation consent resource.      |Max128Text        |              |      |
+|Reference|1..1 |OBWritePAFundsConfirmationRequest1/Data/Reference     |Unique reference, as assigned by the CBPII, to unambiguously refer to the request related to the payment transaction.|Max35Text         |              |      |
+|DebtorAccounts          |1..n |OBWritePAFundsConfirmationRequest1/Data/DebtorAccounts|Unambiguous identification of the account of the debtor to which a debit entry will be made as a result of the transaction.         |OBCashAccountDebtor4 |              |      |
+|SchemeName              |1..1 |OBWritePAFundsConfirmationRequest1/Data/DebtorAccounts/SchemeName       |Name of the identification scheme, in a coded form as published in an external list.|OBExternalAccountIdentification4Code|UK.OBIE.BBAN UK.OBIE.IBAN UK.OBIE.PAN UK.OBIE.Paym UK.OBIE.SortCodeAccountNumber|      |
+|Identification          |1..1 |OBWritePAFundsConfirmationRequest1/Data/DebtorAccounts/Identification   |Identification assigned by an institution to identify an account. This identification is known by the account owner. |Max256Text        |              |      |
+|Name  |0..1 |OBWritePAFundsConfirmationRequest1/Data/DebtorAccounts/Name             |Name of the account, as assigned by the account servicing institution.  Usage: The account name is the name or names of the account owner(s) represented at an account level. The account name is not the product name or the nickname of the account.|Max70Text         |              |      |
+|SecondaryIdentification |0..1 |OBWritePAFundsConfirmationRequest1/Data/DebtorAccounts/SecondaryIdentification         |This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination).            |Max34Text         |              |      |
+|InstructedAmount        |1..1 |OBWritePAFundsConfirmationRequest1/Data/InstructedAmount |Amount of money to be confirmed as available funds in the debtor account. Contains an Amount and a Currency.      |OBActiveOrHistoricCurrencyAndAmount |              |      |
+|Amount|1..1 |OBWritePAFundsConfirmationRequest1/Data/InstructedAmount/Amount         |A number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217.      |OBActiveCurrencyAndAmount_SimpleType|              |`^\d{1,13}$\|^\d{1,13}\.\d{1,5}$`        |
+|Currency |1..1 |OBWritePAFundsConfirmationRequest1/Data/InstructedAmount/Currency       |A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds". |ActiveOrHistoricCurrencyCode        |              |^[A-Z]{3,3}$         |
 
-### payment agreement consents Confirmation of Funds - Response
+### Payment Agreement Consents - Confirmation of Funds - Response
 
 The OBWritePAFundsConfirmationResponse1 object will be used for a response to a call to:
 
@@ -214,28 +341,48 @@ The confirmation of funds response contains the result of a funds availability c
 
 #### Data Dictionary
 
-TBC
+| Name |Occurrence |XPath |EnhancedDefinition |Class |Codes |Pattern |
+| ---- |---------- |----- |------------------ |----- |----- |------- |
+|OBWritePAFundsConfirmationResponse1    |      |OBWritePAFundsConfirmationResponse1     |             |OBWritePAFundsConfirmationResponse1                ||   |
+|Data      |1..1  |OBWritePAFundsConfirmationResponse1/Data|             |OBWriteDataPAFundsConfirmationResponse1            ||   |
+|FundsConfirmationId                    |1..1  |OBWritePAFundsConfirmationResponse1/Data/FundsConfirmationId  |Unique identification as assigned by the ASPSP to uniquely identify the funds confirmation resource.|Max40Text             ||   |
+|ConsentId |1..1  |OBWritePAFundsConfirmationResponse1/Data/ConsentId            |Unique identification as assigned by the ASPSP to uniquely identify the funds confirmation consent resource.                     |Max128Text            ||   |
+|CreationDateTime |1..1  |OBWritePAFundsConfirmationResponse1/Data/CreationDateTime     |Date and time at which the resource was created. |ISODateTime           ||   |
+|Reference |1..1  |OBWritePAFundsConfirmationResponse1/Data/Reference            |Unique reference, as assigned by the CBPII, to unambiguously refer to the request related to the payment transaction.            |Max35Text             ||   |
+|FundsAvailableResult                   |0..1  |OBWritePAFundsConfirmationResponse1/Data/FundsAvailableResult |Result of a funds availability check.     |OBPAFundsAvailableResult1    ||   |
+|FundsAvailableDateTime                 |1..1  |OBWritePAFundsConfirmationResponse1/Data/FundsAvailableResult/FundsAvailableDateTime       |Date and time at which the funds availability check was generated.     |ISODateTime           ||   |
+|FundsAvailable   |1..1  |OBWritePAFundsConfirmationResponse1/Data/FundsAvailableResult/FundsAvailable               |Availaility result, clearly indicating the availability of funds given the Amount in the request.   |xs:string             |Available AvailableWithOverdraft NotAvailable      |   |
+|DebtorAccount    |0..1  |OBWritePAFundsConfirmationResponse1/Data/FundsAvailableResult/DebtorAccount                |Provides the details to identify an account.     |OBCashAccountDebtor4  ||   |
+|SchemeName|1..1  |OBWritePAFundsConfirmationResponse1/Data/FundsAvailableResult/DebtorAccount/SchemeName     |Name of the identification scheme, in a coded form as published in an external list.                |OBExternalAccountIdentification4Code               |UK.OBIE.BBAN UK.OBIE.IBAN UK.OBIE.PAN UK.OBIE.Paym UK.OBIE.SortCodeAccountNumber|   |
+|Identification   |1..1  |OBWritePAFundsConfirmationResponse1/Data/FundsAvailableResult/DebtorAccount/Identification |Identification assigned by an institution to identify an account. This identification is known by the account owner.             |Max256Text            ||   |
+|Name      |0..1  |OBWritePAFundsConfirmationResponse1/Data/FundsAvailableResult/DebtorAccount/Name           |Name of the account, as assigned by the account servicing institution.  Usage: The account name is the name or names of the account owner(s) represented at an account level. The account name is not the product name or the nickname of the account.      |Max70Text             ||   |
+|SecondaryIdentification                |0..1  |OBWritePAFundsConfirmationResponse1/Data/FundsAvailableResult/DebtorAccount/SecondaryIdentification                     |This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination).|Max34Text             ||   |
+|InstructedAmount |1..1  |OBWritePAFundsConfirmationResponse1/Data/InstructedAmount     |Amount of money to be confirmed as available funds in the debtor account. Contains an Amount and a Currency.                     |OBActiveOrHistoricCurrencyAndAmount                ||   |
+|Amount    |1..1  |OBWritePAFundsConfirmationResponse1/Data/InstructedAmount/Amount     |A number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217.   |OBActiveCurrencyAndAmount_SimpleType               ||`^\d{1,13}$\|^\d{1,13}\.\d{1,5}$` |
+|Currency  |1..1  |OBWritePAFundsConfirmationResponse1/Data/InstructedAmount/Currency   |A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".               |ActiveOrHistoricCurrencyCode ||`^[A-Z]{3,3}$`            |
 
-### payment agreement consents Update - Request
+### Payment Agreement Consents Update - Request
 
-The OBWritePAFundsConfirmationRequest1 object must be used to request funds availability for a specific amount, across the Debtor Accounts included in the payment agreement consents.
-The TPP must specify at least 1 debtor account, and the specified debtor accounts must be from the set of debtor account(s), specified and later authorised by the PSU.
+The OBWritePAUpdateRequest1 object must be used to update/modify the elements of the Payment Agreement Consent
 
-- POST /payment-agreement-consents/{ConsentId}/funds-confirmation
+- PUT /payment-agreement-consents/{ConsentId}
 
 #### UML Diagram
 
-![OBWritePAFundsConfirmationRequest1](./images/OBWritePAFundsConfirmationRequest1.gif)
+![OBWritePAUpdateRequest1](./images/OBWritePAUpdateRequest1.gif)
 
 #### Notes
 
-TBC
+- None
 
 #### Data Dictionary
 
-TBC
+| Name |Occurrence |XPath |EnhancedDefinition |Class |Codes |Pattern |
+| ---- |---------- |----- |------------------ |----- |----- |------- |
+|OBWritePAUpdateRequest1                |      |OBWritePAUpdateRequest1          |             |OBWritePAUpdateRequest1      ||   |
+|fields    |0..n  |OBWritePAUpdateRequest1/fields   | JSON Path of the field to be updated, e.g., Data.PaymentAgreement.Status     |Max500Text            ||   |
 
-### payment agreement consents Update - Response
+### Payment Agreement Consents Update - Response
 
 The response to the update request could be one of the following HTTP Status codes, no payload is required.
 
@@ -245,9 +392,7 @@ The response to the update request could be one of the following HTTP Status cod
 |302| Updates require PSU Authorisation|
 |4xx| Validation Errors|
 
-## Usage Examples - TBC
-
-Note, further usage examples are available [here](../../references/usage-examples/README.md).
+## Usage Examples
 
 ### POST /payment-agreement-consents
 
@@ -279,7 +424,7 @@ Accept: application/json
           "SecondaryIdentification": "Roll 56988"
         }
       ],
-      "CreditorAccounts": {
+      "CreditorAccount": {
           "SchemeName": "SortCodeAccountNumber",
           "Identification": "30949330000010",
           "SecondaryIdentification": "Roll 90210"
@@ -347,7 +492,7 @@ Content-Type: application/json
           "SecondaryIdentification": "Roll 56988"
         }
       ],
-      "CreditorAccounts": {
+      "CreditorAccount": {
           "SchemeName": "SortCodeAccountNumber",
           "Identification": "30949330000010",
           "SecondaryIdentification": "Roll 90210"
@@ -432,7 +577,7 @@ Content-Type: application/json
           "SecondaryIdentification": "Roll 56988"
         }
       ],
-      "CreditorAccounts": {
+      "CreditorAccount": {
           "SchemeName": "SortCodeAccountNumber",
           "Identification": "30949330000010",
           "SecondaryIdentification": "Roll 90210"

@@ -1,7 +1,38 @@
 # Variable Recurring Payments API Profile - v1.0.0-draft1 <!-- omit in toc -->
 
 <!-- start-toc -->
-
+- [Overview](#overview)
+  - [Document Overview](#document-overview)
+  - [Resources](#resources)
+- [Basics](#basics)
+  - [Overview](#overview-1)
+    - [Steps](#steps)
+    - [Sequence Diagram](#sequence-diagram)
+  - [Payment Restrictions](#payment-restrictions)
+  - [Release Management](#release-management)
+    - [payment-agreement-consents](#payment-agreement-consents)
+      - [POST](#post)
+      - [GET](#get)
+    - [payment-agreement-consents (Confirm Funds)](#payment-agreement-consents-confirm-funds)
+      - [POST](#post-1)
+    - [payment-orders](#payment-orders)
+- [Security & Access Control](#security--access-control)
+  - [Scopes](#scopes)
+  - [Grants Types](#grants-types)
+  - [Consent Authorisation](#consent-authorisation)
+  - [Consent Revocation](#consent-revocation)
+    - [Multiple Authorisation](#multiple-authorisation)
+    - [Error Condition](#error-condition)
+    - [Consent Revocation](#consent-revocation-1)
+    - [Changes to Debtor Accounts](#changes-to-debtor-accounts)
+    - [Consent Re-authentication](#consent-re-authentication)
+  - [Risk Scoring Information](#risk-scoring-information)
+- [Data Model](#data-model)
+  - [Reused Classes](#reused-classes)
+    - [Multi Authorisation](#multi-authorisation)
+    - [OBWritePaymentDetails1](#obwritepaymentdetails1)
+      - [UML Diagram](#uml-diagram)
+      - [Data Dictionary](#data-dictionary)
 <!-- end-toc -->
 
 ## Overview
@@ -9,6 +40,7 @@
 The Variable Recurring Payments API Profile describes the flows and common functionality for setting up Payment Agrements and subsequently creating one or more payment orders that meet the limitations set by the payment agreement.
 
 The functionality includes the ability to:
+
 - **Stage** a payment agreement consent.
 - Optionally **confirm available funds** for a payment-order of a specified amount
 - Subsequently **submit** the payment-order for processing.
@@ -50,6 +82,7 @@ Each of the Payment Initiation API resources are documented in the  [Resources a
 The figure below provides a **general** outline of a VRP flow.
 
 The flow below is documented in terms of two abstract resources:
+
 - `payment agreement consents`: A consent created between a PSU and TPP that allows the TPP to create `payment-orders` on behalf of the PSU subject to certain controls
 - `payment-orders`: A payment order created by the TPP that meets the limitations set out by an approved payment agreement consent.
 
@@ -103,7 +136,7 @@ Step 6: Get Consent/Payment-Order/Payment-Details Status
 
 #### Sequence Diagram
 
-![Payments Flow](./images/payment agreement-flow.png)
+![Payments Flow](./images/payment-agreement-flow.png)
 
 [Diagram source](./images/Payments-Flow.puml)
 
@@ -199,7 +232,7 @@ Ways and mechanism is elaborated in the Resources and Data Model pages.
 
 #### Changes to Debtor Accounts
 
-TBC
+At the time of writing of this version of the specification, there are no requirements of Changes to selected Debtor Accounts.
 
 #### Consent Re-authentication
 
@@ -212,11 +245,12 @@ Risk Scoring information available to OBIE Payment Initiation payment order is a
 ## Data Model
 
 ### Reused Classes
+
 The standard makes use of classes that are defined in the OBIE R/W API Specifications.
 
 #### Multi Authorisation
 
-TBC - To be checked against product requirements.
+At the time of writing of this version of the specification, there are no requirements of Multi Authorisation.
 
 #### OBWritePaymentDetails1
 

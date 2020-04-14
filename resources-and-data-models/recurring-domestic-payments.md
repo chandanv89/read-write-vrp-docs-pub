@@ -3,7 +3,7 @@
 <!-- start-toc -->
 - [Overview](#overview)
 - [Endpoints](#endpoints)
-  - [POST /payment-agreement-consents/{ConsentId}/domestic-payments](#post-payment-agreement-consentsconsentiddomestic-payments)
+  - [POST /payment-agreement-consents/{ConsentId}/domestic-payments/](#post-payment-agreement-consentsconsentiddomestic-payments)
   - [POST /domestic-payments](#post-domestic-payments)
     - [Status](#status)
   - [GET /domestic-payments/{DomesticPaymentId}](#get-domestic-paymentsdomesticpaymentid)
@@ -48,7 +48,7 @@ This resource description should be read in conjunction with a compatible Paymen
 | domestic-payments |GET |GET /domestic-payments/{DomesticPaymentId} |Mandatory |payments |Client Credentials |Signed Response |No |NA |OBWriteDomesticResponse5 |
 | payment-details |GET |GET /domestic-payments/{DomesticPaymentId}/payment-details |Optional |payments |Client Credentials |Signed Response |No |NA |OBWritePaymentDetailsResponse1 |
 
-### POST /payment-agreement-consents/{ConsentId}/domestic-payments
+### POST /payment-agreement-consents/{ConsentId}/domestic-payments/
 ### POST /domestic-payments
 
 Once the payment-agreement-consent has been authorised by the PSU, the TPP can proceed to submitting the domestic-payment for processing.
@@ -143,7 +143,7 @@ The definitions for the status:
 
 ##### Multiple Authorisation
 
-TBC
+At the time of writing of this version of the specification, there are no requirements of Multi Authorisation.
 
 ## Data Model
 
