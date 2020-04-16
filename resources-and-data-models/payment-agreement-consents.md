@@ -9,7 +9,7 @@
     - [Status](#status-1)
   - [POST /payment-agreement-consents/{ConsentId}/funds-confirmation](#post-payment-agreement-consentsconsentidfunds-confirmation)
   - [PATCH /payment-agreement-consents/{ConsentId}](#patch-payment-agreement-consentsconsentid)
-  - [State Model](#state-model)
+- [State Model](#state-model)
     - [Payment Agreement Consents](#payment-agreement-consents)
 - [Data Model](#data-model)
   - [Payment Agreement Consents - Request](#payment-agreement-consents---request)
@@ -40,6 +40,9 @@
   - [GET /payment-agreement-consents/{ConsentId}](#get-payment-agreement-consentsconsentid-1)
     - [Request](#request-1)
     - [Response](#response-1)
+  - [PATCH /payment-agreement-consents/{ConsentId}](#patch-payment-agreement-consentsconsentid-1)
+    - [Request](#request-2)
+    - [Response](#response-2)
 <!-- end-toc -->
 
 ## Overview
@@ -115,7 +118,7 @@ This endpoint can be used by the TPP to modify the payment agreement consents, p
 This endpoint can be used by the TPP, in case of PSU Revoking the Consent, via TPP's channel.
 The TPP can sent the request to only update the Status to be Revoked.
 
-### State Model
+## State Model
 
 #### Payment Agreement Consents
 
@@ -363,9 +366,9 @@ The confirmation of funds response contains the result of a funds availability c
 
 ### Payment Agreement Consents Update - Request
 
-The OBWritePAUpdateRequest1 object must be used to update/modify the elements of the Payment Agreement Consent
+The OBWritePAUpdateRequest1 object must be used to update/modify the elements of the Payment Agreement Consent.
 
-- PUT /payment-agreement-consents/{ConsentId}
+- PATCH /payment-agreement-consents/{ConsentId}
 
 #### UML Diagram
 
@@ -417,7 +420,7 @@ Accept: application/json
       "ValidFromDateTime": "2017-06-05T15:15:13+00:00",
       "ValidToDateTime": "2020-06-05T15:15:13+00:00",
       "Reference": "Mandatory reference",
-      "DebtorAccount": [
+      "DebtorAccounts": [
         {
           "SchemeName": "UK.OBIE.IBAN",
           "Identification": "GB76LOYD30949301273801",
@@ -480,12 +483,11 @@ Content-Type: application/json
     "Status": "AwaitingAuthorisation",
     "CreationDateTime": "2017-06-05T15:15:13+00:00",
     "StatusUpdateDateTime": "2017-06-05T15:15:13+00:00",
-    "ReadRefundAccount": "Yes",
      "PaymentAgreement": {
       "ValidFromDateTime": "2017-06-05T15:15:13+00:00",
       "ValidToDateTime": "2020-06-05T15:15:13+00:00",
       "Reference": "Mandatory reference",
-      "DebtorAccount": [
+      "DebtorAccounts": [
         {
           "SchemeName": "UK.OBIE.IBAN",
           "Identification": "GB76LOYD30949301273801",
@@ -542,7 +544,7 @@ Content-Type: application/json
 
 ```
 GET /payment-agreement-consents/58923 HTTP/1.1
-Authorization: Bearer Jhingapulaav
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 x-fapi-auth-date: Sun, 10 Sep 2017 19:43:31 GMT
 x-fapi-customer-ip-address: 104.25.212.99
 x-fapi-interaction-id: 93bac548-d2de-4546-b106-880a5018460d
@@ -565,12 +567,11 @@ Content-Type: application/json
     "Status": "Authorised",
     "CreationDateTime": "2017-06-05T15:15:13+00:00",
     "StatusUpdateDateTime": "2017-06-05T15:15:22+00:00",
-    "ReadRefundAccount": "Yes",
      "PaymentAgreement": {
       "ValidFromDateTime": "2017-06-05T15:15:13+00:00",
       "ValidToDateTime": "2020-06-05T15:15:13+00:00",
       "Reference": "Mandatory reference",
-      "DebtorAccount": [
+      "DebtorAccounts": [
         {
           "SchemeName": "UK.OBIE.IBAN",
           "Identification": "GB76LOYD30949301273801",
@@ -619,5 +620,36 @@ Content-Type: application/json
   },
   "Meta": {}
 }
+```
 
+### PATCH /payment-agreement-consents/{ConsentId}
+
+
+#### Request
+
+```
+PATCH /payment-agreement-consents/58923 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+x-idempotency-key: FRESCO.21302.GFX.20
+x-jws-signature: TGlmZSdzIGEgam91cm5leSBub3QgYSBkZXN0aW5hdGlvbiA=..T2ggZ29vZCBldmVuaW5nIG1yIHR5bGVyIGdvaW5nIGRvd24gPw==
+x-fapi-auth-date: Sun, 10 Sep 2017 19:43:31 GMT
+x-fapi-customer-ip-address: 104.25.212.99
+x-fapi-interaction-id: 93bac548-d2de-4546-b106-880a5018460d
+Content-Type: application/json
+Accept: application/json
+```
+
+```json
+{
+  "Data": {
+    "Data.PaymentAgreement.ValidToDateTime": "2020-07-05T15:15:13+00:00"
+  }
+}
+```
+
+#### Response
+
+```
+HTTP/1.1 204 No Content
+Content-Location: /payment-agreement-consents/58923
 ```

@@ -52,7 +52,7 @@ This resource description should be read in conjunction with a compatible Paymen
 ### POST /domestic-payments
 
 Once the payment-agreement-consent has been authorised by the PSU, the TPP can proceed to submitting the domestic-payment for processing.
-An ASPSP can chose between implementing a dedicated URI `/payment-agreement-consents/{ConsentId}/domestic-payments` endpoint, or the same PISP endpoint - `/domestic-payments`, with a documented mechanism on how they would differentiate the "Payment Agreement- Domestic Payment" Orders vs "Domestic Payment Consent - Payment Orders". 
+An ASPSP can chose between implementing a dedicated URI `/payment-agreement-consents/{ConsentId}/domestic-payments` endpoint, or the same PISP endpoint - `/domestic-payments`, with a documented mechanism on how they would differentiate the "Payment Agreement- Domestic Payment" Orders vs "Domestic Payment Consent - Payment Orders".
 
 * This is done by making a POST request to the **domestic-payments** endpoint, accessible under a Payment Agreement specific URL.
 * This request is an instruction to the ASPSP to begin the domestic single immediate payment journey. The domestic payment must be executed immediately, however, there are some scenarios where the domestic payment may not be executed immediately (e.g., busy periods at the ASPSP).
@@ -61,7 +61,7 @@ An ASPSP can chose between implementing a dedicated URI `/payment-agreement-cons
 
 #### Status
 
-A domestic-payment can only be created if its corresponding payment-agreement-consent resource has the status of "Authorised". 
+A domestic-payment can only be created if its corresponding payment-agreement-consent resource has the status of "Authorised".
 
 The domestic-payment resource that is created successfully must have one of the following PaymentStatusCode code-set enumerations:
 
@@ -238,17 +238,39 @@ The OBWritePaymentDetailsResponse1 object will be used for a response to a call 
 | Data |1..1 |OBWritePaymentDetailsResponse1/Data | |OBWriteDataPaymentOrderStatusResponse1 | | |
 | PaymentStatus |0..unbounded |OBWritePaymentDetailsResponse1/Data/PaymentStatus |Payment status details. |OBWritePaymentDetails1 | | |
 
+#### OBWritePaymentDetails1
+
+This section describes the OBWritePaymentDetails1 class which used in the response payloads of payment-detail sub resources.
+
+##### UML Diagram
+
+![](./images/OBWritePaymentDetails1.png)
+
+##### Data Dictionary
+
+| Name |Occurrence |XPath |EnhancedDefinition |Class |Codes |Pattern |
+| --- |--- |--- |--- |--- |--- |--- |
+| OBWritePaymentDetails1 |1..1 |OBWritePaymentDetails1 |Payment status details. |OBWritePaymentDetails1 | | |
+| PaymentTransactionId |1..1 |OBWritePaymentDetails1/PaymentTransactionId |Unique identifier for the transaction within an servicing institution. This identifier is both unique and immutable. |Max210Text | | |
+| Status |1..1 |OBWritePaymentDetails1/Status |Status of a transfer, as assigned by the transaction administrator. |OBTransactionIndividualExtendedISOStatus1Code |Accepted<br>AcceptedCancellationRequest<br>AcceptedCreditSettlementCompleted<br>AcceptedCustomerProfile<br>AcceptedFundsChecked<br>AcceptedSettlementCompleted<br>AcceptedSettlementInProcess<br>AcceptedTechnicalValidation<br>AcceptedWithChange<br>AcceptedWithoutPosting<br>Cancelled<br>NoCancellationProcess<br>PartiallyAcceptedCancellationRequest<br>PartiallyAcceptedTechnicalCorrect<br>PaymentCancelled<br>Pending<br>PendingCancellationRequest<br>Received<br>Rejected<br>RejectedCancellationRequest | |
+| StatusUpdateDateTime |1..1 |OBWritePaymentDetails1/StatusUpdateDateTime |Date and time at which the status was assigned to the transfer. |ISODateTime | | |
+| StatusDetail |0..1 |OBWritePaymentDetails1/StatusDetail |Payment status details as per underlying Payment Rail. |OBPaymentStatusDetail1 | | |
+| LocalInstrument |0..1 |OBWritePaymentDetails1/StatusDetail/LocalInstrument |User community specific instrument.<br><br>Usage: This element is used to specify a local instrument, local clearing option and/or further qualify the service or service level. |OBExternalLocalInstrument1Code | | |
+| Status |1..1 |OBWritePaymentDetails1/StatusDetail/Status |Status of a transfer, as assigned by the transaction administrator. |Max128Text | | |
+| StatusReason |0..1 |OBWritePaymentDetails1/StatusDetail/StatusReason |Reason Code provided for the status of a transfer. |OBTransactionIndividualStatusReason1Code |Cancelled<br>PendingFailingSettlement<br>PendingSettlement<br>Proprietary<br>ProprietaryRejection<br>Suspended<br>Unmatched | |
+| StatusReasonDescription |0..1 |OBWritePaymentDetails1/StatusDetail/StatusReasonDescription |Reason provided for the status of a transfer. |Max256Text | | |
+
 ## Usage Examples
 
-Note, further usage examples are available [here](../../references/usage-examples/README.md).
+A valid Payment Agreement Consent is required to initiate the Payment Orders.
 
-### POST /domestic-payments
+### POST /payment-agreement-consents/{ConsentId}/domestic-payments
 
 #### Request
 
 ```
-POST /domestic-payments HTTP/1.1
-Authorization: Bearer Jhingapulaav
+POST /payment-agreement-consents/58923/domestic-payments HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIhTyU5cCI6IkpXVCJ9
 x-idempotency-key: FRESNO.1317.GFX.22
 x-jws-signature: TGlmZSdzIGEgam91cm5leSBub3QgYSBkZXN0aW5hdGlvbiA=..T2ggZ29vZCBldmVuaW5nIG1yIHR5bGVyIGdvaW5nIGRvd24gPw==
 x-fapi-auth-date: Sun, 10 Sep 2017 19:43:31 GMT
@@ -266,15 +288,20 @@ Accept: application/json
       "InstructionIdentification": "ACME412",
       "EndToEndIdentification": "FRESCO.21302.GFX.20",
       "InstructedAmount": {
-        "Amount": "165.88",
+        "Amount": "100.88",
         "Currency": "GBP"
       },
-      "CreditorAccount": {
-        "SchemeName": "UK.OBIE.SortCodeAccountNumber",
-        "Identification": "08080021325698",
-        "Name": "ACME Inc",
-        "SecondaryIdentification": "0002"
+      "DebtorAccount": {
+        "SchemeName": "UK.OBIE.IBAN",
+        "Identification": "GB76LOYD30949301273801",
+        "SecondaryIdentification": "Roll 56988"
       },
+      "CreditorAccount": {
+          "SchemeName": "SortCodeAccountNumber",
+          "Identification": "30949330000010",
+          "SecondaryIdentification": "Roll 90210"
+        }
+      ,
       "RemittanceInformation": {
         "Reference": "FRESCO-101",
         "Unstructured": "Internal ops code 5120101"
@@ -320,25 +347,22 @@ Content-Type: application/json
     "Status": "AcceptedSettlementInProcess",
     "CreationDateTime": "2017-06-05T15:15:22+00:00",
     "StatusUpdateDateTime": "2017-06-05T15:15:13+00:00",
-    "Refund": {
-      "Account": {
-        "SchemeName": "UK.OBIE.SortCodeAccountNumber",
-        "Identification": "08080021325677",
-        "Name": "NTPC Inc"
-      }
-    },
     "Initiation": {
       "InstructionIdentification": "ACME412",
       "EndToEndIdentification": "FRESCO.21302.GFX.20",
       "InstructedAmount": {
-        "Amount": "165.88",
+        "Amount": "100.88",
         "Currency": "GBP"
       },
+      "DebtorAccount": {
+        "SchemeName": "UK.OBIE.IBAN",
+        "Identification": "GB76LOYD30949301273801",
+        "SecondaryIdentification": "Roll 56988"
+      },
       "CreditorAccount": {
-        "SchemeName": "UK.OBIE.SortCodeAccountNumber",
-        "Identification": "08080021325698",
-        "Name": "ACME Inc",
-        "SecondaryIdentification": "0002"
+          "SchemeName": "SortCodeAccountNumber",
+          "Identification": "30949330000010",
+          "SecondaryIdentification": "Roll 90210"
       },
       "RemittanceInformation": {
         "Reference": "FRESCO-101",
@@ -347,11 +371,12 @@ Content-Type: application/json
     }
   },
   "Links": {
-    "Self": "https://api.alphabank.com/open-banking/v3.1/pisp/domestic-payments/58923-001"
+    "Self": "https://api.alphabank.com/open-banking/v1.0/vrp/domestic-payments/58923-001"
   },
   "Meta": {}
 }
 ```
+
 ### GET /domestic-payments/{DomesticPaymentId}
 
 #### Request
@@ -376,37 +401,88 @@ Content-Type: application/json
 
 ```json
 {
-  "Data": {
-    "DomesticPaymentId": "58923-001",
-    "ConsentId": "58923",
-    "Status": "AcceptedSettlementInProcess",
-    "CreationDateTime": "2017-06-05T15:15:22+00:00",
-    "StatusUpdateDateTime": "2017-06-05T15:15:22+00:00",
-    "Initiation": {
-      "InstructionIdentification": "ACME412",
-      "EndToEndIdentification": "FRESCO.21302.GFX.20",
-      "InstructedAmount": {
-        "Amount": "165.88",
-        "Currency": "GBP"
+   "Data":{
+      "DomesticPaymentId":"58923-001",
+      "ConsentId":"58923",
+      "Status":"AcceptedSettlementInProcess",
+      "CreationDateTime":"2017-06-05T15:15:22+00:00",
+      "StatusUpdateDateTime":"2017-06-05T15:15:22+00:00",
+      "Initiation":{
+         "InstructionIdentification":"ACME412",
+         "EndToEndIdentification":"FRESCO.21302.GFX.20",
+         "InstructedAmount":{
+            "Amount":"100.88",
+            "Currency":"GBP"
+         },
+         "DebtorAccount":{
+            "SchemeName":"UK.OBIE.IBAN",
+            "Identification":"GB76LOYD30949301273801",
+            "SecondaryIdentification":"Roll 56988"
+         },
+         "CreditorAccount":{
+            "SchemeName":"SortCodeAccountNumber",
+            "Identification":"30949330000010",
+            "SecondaryIdentification":"Roll 90210"
+         },
+         "RemittanceInformation":{
+            "Reference":"FRESCO-101",
+            "Unstructured":"Internal ops code 5120101"
+         }
       },
-      "CreditorAccount": {
-        "SchemeName": "UK.OBIE.SortCodeAccountNumber",
-        "Identification": "08080021325698",
-        "Name": "ACME Inc",
-        "SecondaryIdentification": "0002"
-      },
-      "RemittanceInformation": {
-        "Reference": "FRESCO-101",
-        "Unstructured": "Internal ops code 5120101"
+      "Debtor":{
+         "Name":"D Jones"
       }
-    },
-    "Debtor": {
-      "Name": "D Jones"
-    }
-  },
-  "Links": {
-    "Self": "https://api.alphabank.com/open-banking/v3.1/pisp/domestic-payments/58923-001"
-  },
-  "Meta": {}
+   },
+   "Links":{
+      "Self":"https://api.alphabank.com/open-banking/v1.0/vrp/domestic-payments/58923-001"
+   },
+   "Meta":{
+
+   }
+}
+```
+
+### GET /domestic-payments/{DomesticPaymentId}/payment-details
+
+#### Request
+
+```
+GET /domestic-payments/58923-001/payment-details HTTP/1.1
+Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA
+x-fapi-auth-date:  Sun, 10 Sep 2017 19:43:31 GMT
+x-fapi-customer-ip-address: 104.25.212.99
+x-fapi-interaction-id: 93bac548-d2de-4546-b106-880a5018460d
+Accept: application/json
+```
+
+#### Response 
+
+```
+HTTP/1.1 200 OK
+x-jws-signature: V2hhdCB3ZSBnb3QgaGVyZQ0K..aXMgZmFpbHVyZSB0byBjb21tdW5pY2F0ZQ0K
+x-fapi-interaction-id: 93bac548-d2de-4546-b106-880a5018460d
+Content-Type: application/json
+```
+
+```json
+{
+   "Data":{
+      "PaymentStatus":{
+         "PaymentTransactionId":"58923-001",
+         "Status":"AcceptedSettlementInProcess",
+         "StatusUpdateDateTime":"2017-06-05T15:15:22+00:00",
+         "StatusDetail":{
+            "LocalInstrument":"UK.OBIE.FPS",
+            "Status":"AcceptedSettlementInProcess",
+            "StatusReason":"PendingSettlement"
+         }
+      }
+   },
+   "Links": {
+      "Self":"https://api.alphabank.com/open-banking/v1.0/vrp/domestic-payments/58923-001/payment-details"
+   },
+   "Meta":{
+
+   }
 }
 ```
