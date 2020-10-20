@@ -27,12 +27,6 @@
     - [Changes to Debtor Accounts](#changes-to-debtor-accounts)
     - [Consent Re-authentication](#consent-re-authentication)
   - [Risk Scoring Information](#risk-scoring-information)
-- [Data Model](#data-model)
-  - [Reused Classes](#reused-classes)
-    - [Multi Authorisation](#multi-authorisation)
-    - [OBWritePaymentDetails1](#obwritepaymentdetails1)
-      - [UML Diagram](#uml-diagram)
-      - [Data Dictionary](#data-dictionary)
 <!-- end-toc -->
 
 ## Overview
@@ -93,7 +87,8 @@ The flow below is documented in terms of two abstract resources:
 Step 1: PSU and TPP agree upon a payment agreement consent
 
 - This flow begins with a PSU agreeing to the setup of payment agreement. The agreement and consent is between the PSU and the TPP.
-- The debtor account details and other mandatory control parameters must be specified at this stage.
+- The mandatory control parameters must be specified at this stage.
+- The PSU may provide the debtor accounts to be used (or specify them at a later stage directly to the ASPSP)
 
 Step 2: Setup payment agreement consent
 
@@ -108,6 +103,7 @@ Step 3: Authorise Consent
     - This allows the ASPSP to correlate the payment agreement consent that was setup.
     - The ASPSP authenticates the PSU.
     - The PSU reviews the debtor account(s) at this stage (and other control parameters, specified in Step 1).
+    - The ASPSP provides an interface for the PSU to select the debtor accounts to be used.
     - The ASPSP updates the state of the payment agreement consent resource internally to indicate that the consent has been authorised.
     - Once the consent has been authorised, the PSU is redirected back to the TPP.
   - In a decoupled flow, the ASPSP requests the PSU to authorise consent on an  *authentication device* that is separate from the  *consumption device* on which the PSU is interacting with the TPP.
@@ -115,6 +111,7 @@ Step 3: Authorise Consent
     - The request contains a 'hint' that identifies the PSU paired with the consent to be authorised.
     - The ASPSP authenticates the PSU
     - The PSU reviews the debtor account(s) at this stage (and other control parameters, specified in Step 1).
+    - The ASPSP provides an interface for the PSU to select the debtor accounts to be used.
     - The ASPSP updates the state of the payment agreement consent resource internally to indicate that the consent has been authorised.
     - Once the consent has been authorised, the ASPSP can make a callback to the TPP to provide an access token.
 
@@ -241,3 +238,49 @@ payment agreement consents are long-lived and can be re-authenticated by the PSU
 ### Risk Scoring Information
 
 Risk Scoring information available to OBIE Payment Initiation payment order is available to payment agreement - payment orders as well.
+
+# Event Notifications
+
+## Event Notification for Account Switching
+
+The set of `DebitAccounts` that are associated with a `payment-agreement-consent` may change due to a number of factors:
+- The PSU may close the account
+- The PSU may close the account and switch to another ASPSP
+- The account may be blocked due to a fraud referal
+    
+In any such situation where an account linked to a `payment-agreement-consent` can no longer be used, temporarily or permanently, to make payments, the ASPSP must inform the TPP using events.
+
+The TPP may subscribe to these events using an Agregated Polling mechanism or a push notification mechanism.
+
+The `urn:uk:org:openbanking:events:account-access-consent-linked-account-update` event is used to indicate such a change.
+
+A custom claim, `reason` should be used with the event to indicate the reason for the event. This should be a namespaced enumeration.
+
+The `sub` and `subject` claim references the URL of the `payment-agreement-consent` that gives the TPP access to the account.
+The TPP can then use the GET operation to retrieve the `payment-agreement-consent` to identify and not changes in the `DebtorAccounts` field.
+
+``` json
+{
+  "iss": "https://examplebank.com/",
+  "iat": 1516239022,
+  "jti": "b460a07c-4962-43d1-85ee-9dc10fbb8f6c",
+  "sub": "https://examplebank.com/api/open-banking/v3.1/vrp/payment-agreement-consents/aac-1234-007",
+  "aud": "7umx5nTR33811QyQfi",
+  "events": {
+    "urn:uk:org:openbanking:events:account-access-consent-linked-account-update": {
+      "subject": {
+        "subject_type": "http://openbanking.org.uk/rid_http://openbanking.org.uk/rty",
+        "http://openbanking.org.uk/rid": "90200",
+        "http://openbanking.org.uk/rty": "accounts",
+        "http://openbanking.org.uk/rlk": [{
+            "version": "v3.1",
+            "link": "https://examplebank.com/api/open-banking/v3.1/vrp/payment-agreement-consents/aac-1234-007"
+          }
+        ]
+      }
+      }
+   },
+  "txn": "dfc51628-3479-4b81-ad60-210b43d02306",
+  "toe": 1516239022
+}
+```

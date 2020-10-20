@@ -65,7 +65,7 @@ This resource description should be read in conjunction with a compatible Variab
 
 The API endpoint allows the TPP to ask an ASPSP to create a new **payment agreement consents*- resource.
 
-- The POST action indicates to the ASPSP that a payment agreement consents has been staged. At this point, although request payload contains Debtor Accounts, but the PSU may not have been identified by the ASPSP.
+- The POST action indicates to the ASPSP that a payment agreement consents has been staged. At this point, although request payload may contain Debtor Accounts, but the PSU may not have been identified by the ASPSP.
 - The endpoint allows the TPP to send a copy of the consent (between PSU and TPP) to the ASPSP for the PSU to authorise.
 - The ASPSP creates the **payment agreement consents** resource and responds with a unique ConsentId to refer to the resource.
 
@@ -155,7 +155,7 @@ The OBWritePaymentAgreementConsent1 object will be used for the call to:
 The payment agreement consents **request** contains these objects:
 
 - PaymentAgreement
-  - One or more Debtor Accounts
+  - Zero or more Debtor Accounts
   - Control Parameters
   - Creditor Details
 - Risk
@@ -181,7 +181,7 @@ The payment agreement consents **request** contains these objects:
 |Currency|1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/PeriodicControl/AmountPerPeriod/Currency        |A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".   |ActiveOrHistoricCurrencyCode       |           |^[A-Z]{3,3}$          |
 |CountPerPeriod         |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/PeriodicControl/CountPerPeriod  |Number of instructions to be created and processed during the specified period            |DecimalNumber      |           | |
 |Period |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/ControlParameters/PeriodicControl/Period          |Period for which the number of instructions are to be created and processed.              |Frequency6Code     |ADHO DAIL FRTN INDA MIAN MNTH QURT WEEK YEAR    | |
-|DebtorAccounts         |1..n|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts    |Unambiguous identification of the account of the debtor to which a debit entry will be made as a result of the transaction.    |OBCashAccountDebtor4|           | |
+|DebtorAccounts         |0..n|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts    |Unambiguous identification of the account of the debtor to which a debit entry will be made as a result of the transaction.    |OBCashAccountDebtor4|           | |
 |SchemeName             |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts/SchemeName         |Name of the identification scheme, in a coded form as published in an external list.      |OBExternalAccountIdentification4Code|UK.OBIE.BBAN UK.OBIE.IBAN UK.OBIE.PAN UK.OBIE.Paym UK.OBIE.SortCodeAccountNumber| |
 |Identification         |1..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts/Identification     |Identification assigned by an institution to identify an account. This identification is known by the account owner.           |Max256Text         |           | |
 |Name   |0..1|OBWritePaymentAgreementConsent1/Data/PaymentAgreement/DebtorAccounts/Name|Name of the account, as assigned by the account servicing institution.  Usage: The account name is the name or names of the account owner(s) represented at an account level. The account name is not the product name or the nickname of the account.   |Max70Text          |           | |

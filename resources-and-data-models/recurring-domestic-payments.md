@@ -25,13 +25,19 @@
   - [Domestic Payment Order - Payment Details - Response](#domestic-payment-order---payment-details---response)
     - [UML Diagram](#uml-diagram-2)
     - [Data Dictionary](#data-dictionary-2)
+    - [OBWritePaymentDetails1](#obwritepaymentdetails1)
+      - [UML Diagram](#uml-diagram-3)
+      - [Data Dictionary](#data-dictionary-3)
 - [Usage Examples](#usage-examples)
-  - [POST /domestic-payments](#post-domestic-payments-1)
+  - [POST /payment-agreement-consents/{ConsentId}/domestic-payments](#post-payment-agreement-consentsconsentiddomestic-payments-1)
     - [Request](#request)
     - [Response](#response)
   - [GET /domestic-payments/{DomesticPaymentId}](#get-domestic-paymentsdomesticpaymentid-1)
     - [Request](#request-1)
     - [Response](#response-1)
+  - [GET /domestic-payments/{DomesticPaymentId}/payment-details](#get-domestic-paymentsdomesticpaymentidpayment-details-1)
+    - [Request](#request-2)
+    - [Response](#response-2)
 <!-- end-toc -->
 
 ## Overview
@@ -197,7 +203,7 @@ The domestic-payment **response** object contains the:
 * Status and StatusUpdateDateTime of the domestic-payment resource.
 * ExpectedExecutionDateTime for the domestic-payment resource.
 * ExpectedSettlementDateTime for the domestic-payment resource.
-* Different from PISP Payment Orders, the Refund account details, may not be provided, as the TPP always has the Debtor Account Details.
+* A Refund block for processing refunds.
 * Charges array for the breakdown of applicable ASPSP charges.
 
 #### Data Dictionary
@@ -213,7 +219,7 @@ The domestic-payment **response** object contains the:
 | StatusUpdateDateTime |1..1 |OBWriteDomesticResponse5/Data/StatusUpdateDateTime |Date and time at which the resource status was updated. |ISODateTime | | |
 | ExpectedExecutionDateTime |0..1 |OBWriteDomesticResponse5/Data/ExpectedExecutionDateTime |Expected execution date and time for the payment resource. |ISODateTime | | |
 | ExpectedSettlementDateTime |0..1 |OBWriteDomesticResponse5/Data/ExpectedSettlementDateTime |Expected settlement date and time for the payment resource. |ISODateTime | | |
-| Refund |0..1 |OBWriteDomesticResponse5/Data/Refund |Unambiguous identification of the refund account to which a refund will be made as a result of the transaction. |OBDomesticRefundAccount1 | | |
+| Refund |1..1 |OBWriteDomesticResponse5/Data/Refund |Unambiguous identification of the refund account to which a refund will be made as a result of the transaction. |OBDomesticRefundAccount1 | | |
 | Charges |0..n |OBWriteDomesticResponse5/Data/Charges |Set of elements used to provide details of a charge for the payment initiation. |OBCharge2 | | |
 | Initiation |1..1 |OBWriteDomesticResponse5/Data/Initiation |The Initiation payload is sent by the initiating party to the ASPSP. It is used to request movement of funds from the debtor account to a creditor for a single domestic payment. |OBDomestic2 | | |
 | MultiAuthorisation |0..1 |OBWriteDomesticResponse5/Data/MultiAuthorisation |The multiple authorisation flow response from the ASPSP. |OBMultiAuthorisation1 | | |
