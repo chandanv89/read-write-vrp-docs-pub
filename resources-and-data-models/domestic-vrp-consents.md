@@ -9,6 +9,8 @@
 - [State Model - VRP consents](#state-model---vrp-consents)
 - [Data Model](#data-model)
   - [OBCashAccountDebtorWithName](#obcashaccountdebtorwithname)
+  - [OBCashAccountCreditor3](#obcashaccountcreditor3)
+  - [OBBranchAndFinancialInstitutionIdentification6](#obbranchandfinancialinstitutionidentification6)
   - [OBDomesticVRPInitiation](#obdomesticvrpinitiation)
   - [OBDomesticVRPControlParameters](#obdomesticvrpcontrolparameters)
   - [OBRisk](#obrisk)
@@ -112,31 +114,40 @@ The data dictionary section gives the detail on the payload content for the VRP 
 | __Name__ (1..1) | `Name` | Name of the account, as assigned by the account servicing institution.  Usage: The account name is the name or names of the account owner(s) represented at an account level. The account name is not the product name or the nickname of the account. | Max70Text  
 | __SecondaryIdentification__ (0..1) | `SecondaryIdentification` | This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number (in addition to a sort code and account number combination) | Max34Text
 
+### OBCashAccountCreditor3
+
+| Name |Path |Definition | Type |
+| ---- |-----|---------- |------|
+| __Identification__ (1..1) | `Identification` |Identification assigned by an institution to identify an account. This identification is known by the account owner.   |Max256Text
+| __Name__ (1..1) | `Name` |Name of the account, as assigned by the account servicing institution, in consent with the account owner in order to provide an additional means of identification of the account.  Usage: The account name is different from the account owner name. The account name is used in certain user communities to provide a means of identifying the account, in addition to the account owner's identity and the account number. OB: No name validation is expected for confirmation of payee.|Max70Text  
+| __SecondaryIdentification__ (0..1) | `SecondaryIdentification` |This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number__ (in addition to a sort code and account number combination).             |Max34Text
+
+### OBBranchAndFinancialInstitutionIdentification6
+| Name |Path |Definition | Type |
+| ---- |-----|---------- |------|
+| __SchemeName__ (0..1) | `SchemeName` |Name of the identification scheme, in a coded form as published in an external list. |OBExternalFinancialInstitutionIdentification4Code
+| __Identification__ (0..1) | `Identification` |Unique and unambiguous identification of a financial institution or a branch of a financial institution.  | Max35Text  
+| __Name__ (0..1) | `Name` | Name by which an agent is known and which is usually used to identify that agent. | Max140Text
+| __PostalAddress__ (0..1) | `PostalAddress` |Information that locates and identifies a specific address, as defined by postal services.| OBPostalAddress6
+| __AddressType__ (0..1) | `PostalAddress. AddressType` |Identifies the nature of the postal address. |OBAddressTypeCode  |Business Correspondence DeliveryTo MailTo POBox Postal Residential Statement
+| __Department__ (0..1) | `PostalAddress. Department` |Identification of a division of a large organisation or building. | Max70Text  
+| __SubDepartment__ (0..1) | `PostalAddress. SubDepartment` |Identification of a sub-division of a large organisation or building. |Max70Text
+| __StreetName__ (0..1) | `PostalAddress. StreetName`   |Name of a street or thoroughfare.    |Max70Text  
+| __BuildingNumber__ (0..1) | `PostalAddress. BuildingNumber` |Number that identifies the position of a building on a street.   |Max16Text  
+| __PostCode__ (0..1) | `PostalAddress. PostCode` |Identifier consisting of a group of letters and. or numbers that is added to a postal address to assist the sorting of mail.    |Max16Text  
+| __TownName__ (0..1) | `PostalAddress. TownName` |Name of a built-up area, with defined boundaries, and a local government. |Max35Text  
+| __CountrySubDivision__ (0..1) | `PostalAddress. CountrySubDivision` |Identifies a subdivision of a country such as state, region, county.      |Max35Text  
+| __Country__ (0..1) | `PostalAddress. Country` | Nation with its own government.      |CountryCode
+| __AddressLine__  (0..7) | `PostalAddress. AddressLine` |Information that locates and identifies a specific address, as defined by postal services, presented in free format text.      |Max70Text  
+
 ### OBDomesticVRPInitiation
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
 | __DebtorAccount__ (0..1) | `DebtorAccount` | Unambiguous identification of the account of the debtor to which a debit entry will be made as a result of the transaction. | [OBCashAccountDebtorWithName](#OBCashAccountDebtorWithName)
 | __CreditorAgent__ (0..1) | `CreditorAgent` | Financial institution servicing an account for the creditor.     | OBBranchAndFinancialInstitutionIdentification6
-| __SchemeName__ (0..1) | `CreditorAgent. SchemeName` |Name of the identification scheme, in a coded form as published in an external list. |OBExternalFinancialInstitutionIdentification4Code
-| __Identification__ (0..1) | `CreditorAgent. Identification` |Unique and unambiguous identification of a financial institution or a branch of a financial institution.  | Max35Text  
-| __Name__ (0..1) | `CreditorAgent. Name` | Name by which an agent is known and which is usually used to identify that agent. | Max140Text
-| __PostalAddress__ (0..1) | `CreditorAgent. PostalAddress` |Information that locates and identifies a specific address, as defined by postal services.| OBPostalAddress6
-| __AddressType__ (0..1) | `CreditorAgent. PostalAddress. AddressType` |Identifies the nature of the postal address. |OBAddressTypeCode  |Business Correspondence DeliveryTo MailTo POBox Postal Residential Statement
-| __Department__ (0..1) | `CreditorAgent. PostalAddress. Department` |Identification of a division of a large organisation or building. | Max70Text  
-| __SubDepartment__ (0..1) | `CreditorAgent. PostalAddress. SubDepartment` |Identification of a sub-division of a large organisation or building. |Max70Text
-| __StreetName__ (0..1) | `CreditorAgent. PostalAddress. StreetName`   |Name of a street or thoroughfare.    |Max70Text  
-| __BuildingNumber__ (0..1) | `CreditorAgent. PostalAddress. BuildingNumber` |Number that identifies the position of a building on a street.   |Max16Text  
-| __PostCode__ (0..1) | `CreditorAgent. PostalAddress. PostCode` |Identifier consisting of a group of letters and. or numbers that is added to a postal address to assist the sorting of mail.    |Max16Text  
-| __TownName__ (0..1) | `CreditorAgent. PostalAddress. TownName` |Name of a built-up area, with defined boundaries, and a local government. |Max35Text  
-| __CountrySubDivision__ (0..1) | `CreditorAgent. PostalAddress. CountrySubDivision` |Identifies a subdivision of a country such as state, region, county.      |Max35Text  
-| __Country__ (0..1) | `CreditorAgent. PostalAddress. Country` | Nation with its own government.      |CountryCode
-| __AddressLine__  (0..7) | `CreditorAgent. PostalAddress. AddressLine` |Information that locates and identifies a specific address, as defined by postal services, presented in free format text.      |Max70Text  
-| __CreditorAccount__ (1..1) | `CreditorAccount`   |Unambiguous identification of the account of the creditor to which a credit entry will be posted as a result of the payment transaction.       |OBCashAccountCreditor3
-| __SchemeName__ (1..1) | `CreditorAccount. SchemeName` |Name of the identification scheme, in a coded form as published in an external list.      |OBExternalAccountIdentification4Code|UK.OBIE.BBAN UK.OBIE.IBAN UK.OBIE.PAN UK.OBIE.Paym UK.OBIE.SortCodeAccountNumber| |
-| __Identification__ (1..1) | `CreditorAccount. Identification` |Identification assigned by an institution to identify an account. This identification is known by the account owner.   |Max256Text
-| __Name__ (1..1) | `CreditorAccount. Name` |Name of the account, as assigned by the account servicing institution, in consent with the account owner in order to provide an additional means of identification of the account.  Usage: The account name is different from the account owner name. The account name is used in certain user communities to provide a means of identifying the account, in addition to the account owner's identity and the account number. OB: No name validation is expected for confirmation of payee.|Max70Text  
-| __SecondaryIdentification__ (0..1) | `CreditorAccount. SecondaryIdentification` |This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number__ (in addition to a sort code and account number combination).             |Max34Text
+| __CreditorAccount__ (0..1) | `CreditorAccount`   |Unambiguous identification of the account of the creditor to which a credit entry will be posted as a result of the payment transaction.       |OBCashAccountCreditor3
+
 
 ### OBDomesticVRPControlParameters
 

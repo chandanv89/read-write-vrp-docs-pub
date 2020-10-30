@@ -45,7 +45,9 @@ This is done by making a POST request to the `domestic-vrps` endpoint.
 
 This request is an instruction to the ASPSP to begin the domestic single immediate payment journey. The domestic payment must be executed immediately, however, there are some scenarios where the domestic payment may not be executed immediately (e.g., busy periods at the ASPSP).
 
-The TPP **must** ensure that the `Consent` and `Risk` sections of the `domestic-vrps` must match the corresponding parameters specified in the vrp-consent resource. If the two do not match, the ASPSP must not process the request and **must** respond with a 400 (Bad Request).
+The TPP **must** ensure that the `Initiation` and `Risk` section matches the values specified in the consent.
+
+If the `CreditorAccount` was not specified in the the consent, the `CreditorAccount` must be specified in the instruction.
 
 The TPP **must** ensure that the end-point is called with the same scope as the one used for the corresponding consent.
 
@@ -136,6 +138,8 @@ The definitions for the status:
 | __InstructedAmount__ (1..1) | `InstructedAmount` |Amount of money to be moved between the debtor and creditor, before deduction of charges, expressed in the currency as ordered by the initiating party. Usage: This amount has to be transported unchanged through the transaction chain. | OBActiveOrHistoricCurrencyAndAmount
 | __Amount__ (1..1) |`InstructedAmount. Amount` |A number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217. |OBActiveCurrencyAndAmount_SimpleType | `^\d{1,13}$\|^\d{1,13}\.\d{1,5}$`
 | __Currency__ (1..1) | `InstructedAmount. Currency` |A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds". |ActiveOrHistoricCurrencyCode | `^[A-Z]{3,3}$`
+| __CreditorAgent__ (0..1) | `CreditorAgent` | Financial institution servicing an account for the creditor.     | OBBranchAndFinancialInstitutionIdentification6
+| __CreditorAccount__ (0..1) | `CreditorAccount`   |Unambiguous identification of the account of the creditor to which a credit entry will be posted as a result of the payment transaction.       |OBCashAccountCreditor3
 
 ### OBDomesticVRPRequest
 
