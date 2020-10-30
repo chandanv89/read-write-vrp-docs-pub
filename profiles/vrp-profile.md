@@ -257,7 +257,7 @@ The TPP can then use the GET operation to retrieve the `vrp-consent`
 
 ### Event notifications for cancellation of a VRP Consent
 
-In the situation that a VRP mandate is cancelled by a PSU at the ASPSP, the ASPSP must inform the PISP through an event notification about the cancellation.
+In the situation that a VRP Consent is cancelled by a PSU at the ASPSP, the ASPSP must inform the PISP through an event notification about the cancellation.
 
 The TPP may subscribe to these events using an aggregated polling mechanism or a push notification mechanism.
 
