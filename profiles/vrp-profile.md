@@ -7,7 +7,7 @@
     - [Steps](#steps)
     - [Sequence Diagram](#sequence-diagram)
   - [Payment Restrictions](#payment-restrictions)
-  - [Deferred specification of Creditor account](#deferred-specification-of-creditor-account)
+  - [Deferred specification of VRP Consent Parameters](#deferred-specification-of-vrp-consent-parameters)
 - [Security & Access Control](#security--access-control)
   - [Scopes](#scopes)
   - [Grants Types](#grants-types)
@@ -128,11 +128,13 @@ In addition to the control parameters defined in this standard ASPSPs may implem
 
 These restrictions should be documented on ASPSP's developer portal.
 
-### Deferred specification of Creditor account
+### Deferred specification of VRP Consent Parameters
 
-For non-sweeping VRPs a PISP may create a `vrp-consent` without specifying the `CreditorAccount`. The PISP subsequently provides the creditor account when drawing a payment based on the consent. This effectively allows the PISP to initiate payments into different accounts.
+For non-sweeping VRPs a PISP may create a `vrp-consent` without specifying VRP Consent Parameters in the `ControlParameters` for the VRP Consent. 
 
-An ASPSP may opt to permit these type of consents only when an appropriate consent is in place with the PISP.
+The PISP subsequently provides this information when initiating a VRP Payment based on the VRP Consent.
+
+An ASPSP may permit these type of consents only when an appropriate contract is in place with the PISP.
 
 As described in the section below, the ASPSP may also rely on the PISP to carry out SCA (with appropriate contracts in place).
 
