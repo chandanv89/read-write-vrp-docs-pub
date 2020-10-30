@@ -7,17 +7,20 @@
     - [Steps](#steps)
     - [Sequence Diagram](#sequence-diagram)
   - [Payment Restrictions](#payment-restrictions)
+  - [Deferred specification of Creditor account](#deferred-specification-of-creditor-account)
 - [Security & Access Control](#security--access-control)
   - [Scopes](#scopes)
   - [Grants Types](#grants-types)
   - [Consent Authorisation](#consent-authorisation)
   - [Consent Revocation](#consent-revocation)
-    - [Multiple Authorisation](#multiple-authorisation)
-    - [Error Condition](#error-condition)
-    - [Consent Re-authentication](#consent-re-authentication)
+  - [Multiple Authorisation](#multiple-authorisation)
+  - [SCA through the PISP](#sca-through-the-pisp)
+  - [Error Condition](#error-condition)
+  - [Consent Re-authentication](#consent-re-authentication)
   - [Risk Scoring Information](#risk-scoring-information)
 - [Event Notifications](#event-notifications)
   - [Event Notification for changes to DebtorAccount](#event-notification-for-changes-to-debtoraccount)
+  - [Event notifications for cancellation of a VRP Consent](#event-notifications-for-cancellation-of-a-vrp-consent)
 
 ## Introduction
 
@@ -125,6 +128,14 @@ In addition to the control parameters defined in this standard ASPSPs may implem
 
 These restrictions should be documented on ASPSP's developer portal.
 
+### Deferred specification of Creditor account
+
+For non-sweeping VRPs a PISP may create a `vrp-consent` without specifying the `CreditorAccount`. The PISP subsequently provides the creditor account when drawing a payment based on the consent. This effectively allows the PISP to initiate payments into different accounts.
+
+An ASPSP may opt to permit these type of consents only when an appropriate consent is in place with the PISP.
+
+As described in the section below, the ASPSP may also rely on the PISP to carry out SCA (with appropriate contracts in place).
+
 ## Security & Access Control
 
 ### Scopes
@@ -172,15 +183,21 @@ The PSU may revoke the VRP Consent via ASPSP's online channel. If the consent is
 - The ASPSP must fail any future payment order request using the ConsentId, with the Status Revoked.
 - The ASPSP must make a Notification Event available for the TPP to poll/deliver Real Time Event Notification for the event - consent-authorization-revoked.
 
-#### Multiple Authorisation
+### Multiple Authorisation
 
 - Multi-authorisation aspects of VRP Consent and domestic-vrp resource is same PISP R/W Payment Initiation APIs.
 
-#### Error Condition
+### SCA through the PISP
+
+An ASPSP may enter into a contractual arrangement with a PISP to carry out SCA on its behalf. The Read-Write API profile describes the use of a `jwt-bearer` grant type.
+
+This can also be used for vrp consents.
+
+### Error Condition
 
 If the PSU does not complete a successful consent authorisation (e.g., if the PSU has not authenticated successfully), the authorization code grant ends with a redirection to the TPP with an error response as described in [RFC 6749 Section 4.1.2.1](https://tools.ietf.org/html/rfc6749#section-4.1.2.1). The PSU is redirected to the TPP with an error parameter indicating the error that occurred.
 
-#### Consent Re-authentication
+### Consent Re-authentication
 
 VRP Consents are long-lived and can be re-authenticated by the PSU.
 
@@ -231,6 +248,43 @@ The TPP can then use the GET operation to retrieve the `vrp-consent`
       }
       }
    },
+  "txn": "dfc51628-3479-4b81-ad60-210b43d02306",
+  "toe": 1516239022
+}
+```
+
+### Event notifications for cancellation of a VRP Consent
+
+In the situation that a VRP mandate is cancelled by a PSU at the ASPSP, the ASPSP must inform the PISP through an event notification about the cancellation.
+
+The TPP may subscribe to these events using an aggregated polling mechanism or a push notification mechanism.
+
+The `urn:uk:org:openbanking:events:consent-authorization-revoked` event should be used to indicate this.
+
+The TPP can then use the GET operation to retrieve the consent.
+
+```json
+{
+  "iss": "https://examplebank.com/",
+  "iat": 1516239022,
+  "jti": "b460a07c-4962-43d1-85ee-9dc10fbb8f6c",
+  "sub": "https://examplebank.com/api/open-banking/v3.1/vrp/domestic-vrp-consents/88379",
+  "aud": "7umx5nTR33811QyQfi",
+  "events": {
+    "urn:uk:org:openbanking:events:consent-authorization-revoked": {
+      "subject": {
+        "subject_type": "http://openbanking.org.uk/rid_http://openbanking.org.uk/rty",
+        "http://openbanking.org.uk/rid": "88379",
+        "http://openbanking.org.uk/rty": "domestic-vrp-consents",
+        "http://openbanking.org.uk/rlk": [
+          {
+            "version": "v3.1",
+            "link": "https://examplebank.com/api/open-banking/v3.1/vtp/domestic-vrp-consents/88379"
+          }
+        ]
+      }
+    }
+  },
   "txn": "dfc51628-3479-4b81-ad60-210b43d02306",
   "toe": 1516239022
 }
