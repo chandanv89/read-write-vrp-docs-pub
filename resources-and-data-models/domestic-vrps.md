@@ -1,6 +1,5 @@
 # Domestic VRPS - v1.0.0-draft1 <!-- omit in toc -->
 
-<!-- start-toc -->
 - [Overview](#overview)
 - [Endpoints](#endpoints)
   - [POST /domestic-vrps](#post-domestic-vrps)
@@ -21,7 +20,6 @@
   - [POST /domestic-vrps](#post-domestic-vrps-1)
     - [Request](#request)
     - [Response](#response)
-<!-- end-toc -->
 
 ## Overview
 
