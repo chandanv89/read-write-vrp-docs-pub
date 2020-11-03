@@ -300,10 +300,345 @@ components:
                 0..1) | `PostalAddress. Country` | Nation with its own government.      |CountryCode
             AddressLine:
               type: array
+              minItems: 0
+              maxItems: 7
               items:
                 type: string
 
+    OBDomesticVRPRequest:
+      type: object
+      properties:
+        Data:
+          type: object
+          required:
+            - ConsentId
+            - Initiation
+            - Instruction
+            - Risk
+          properties:
+            ConsentId:
+              type: string
+              maxLength: 128
+              description: |-
+                Identifier for the Domestic VRP Consent that this payment is made under.
+            Initiation:
+              $ref: '#/components/schemas/OBDomesticVRPInitiation'
+            Instruction:
+              $ref: '#/components/schemas/OBDomesticVRPInstruction'
+            Risk:
+              $ref: '#/components/schemas/OBRisk1'
 
+    OBDomesticVRPResponse:
+      type: object
+      properties:
+        Data:
+          type: object
+          required:
+            - DomesticVRPId
+            - ConsentId
+            - CreationDateTime
+            - Status
+            - StatusUpdateDateTime
+            - Refund
+            - Initiation
+            - Instruction
+            - DebtorAccount
+          properties:
+            DomesticVRPId:
+              type: string
+              maxLength: 40
+              description: >
+                Unique identification as assigned by the ASPSP to uniquely identify the domestic payment resource.
+            ConsentId:
+              type: string
+              maxLength: 128
+              description: >
+                Identifier for the Domestic VRP Consent that this payment is made under.
+            CreationDateTime:
+              type: string
+              format: date-time
+              description: >
+                Date and time at which the resource was created.
+            Status:
+              type: string
+              description: Specifies the status of the payment information group.
+              enum:
+              - AcceptedCreditSettlementCompleted
+              - AcceptedWithoutPosting
+              - AcceptedSettlementCompleted
+              - AcceptedSettlementInProcess
+              - Pending
+              - Rejected
+            StatusUpdateDateTime:
+              type: string
+              format: date-time
+              description: >
+                Date and time at which the resource status was updated.
+            ExpectedExecutionDateTime:
+              type: string
+              format: date-time
+              description: >
+                Expected execution date and time for the payment resource.
+            ExpectedSettlementDateTime:
+              type: string
+              format: date-time
+              description: >
+                Expected settlement date and time for the payment resource.
+            Refund:
+              $ref: '#/components/schemas/OBDomesticRefundAccount1'
+            Charges:
+              type: array
+              items:
+                $ref: '#/components/schemas/OBCharge2'
+            Initiation:
+              $ref: '#/components/schemas/OBDomesticVRPInitiation'
+            Instruction:
+              $ref: '#/components/schemas/OBDomesticVRPInstruction'
+            MultiAuthorisation:
+              $ref: '#/components/schemas/OBMultiAuthorisation1'
+            DebtorAccount:
+              $ref: '#/components/schemas/OBCashAccountDebtorWithName'
+
+    OBDomesticVRPDetails:
+      type: object
+      properties:
+        Data:
+          type: object
+          required:
+            - PaymentTransactionId
+          properties:
+            PaymentStatus:
+              type: array
+              items:
+                # TODO: extract (would do it but i'm not fully getting the naming convention)
+                required:
+                  - PaymentTransactionId
+                  - Status
+                  - StatusUpdateDateTime
+                type: object
+                properties:
+                  PaymentTransactionId:
+                    type: string
+                    maxLength: 210
+                    description: |-
+                      Unique identifier for the transaction within an servicing institution. This identifier is both unique and immutable.
+                  Status:
+                    type: string
+                    description: |-
+                      Status of a transfer, as assigned by the transaction administrator.
+                    enum:
+                      - Accepted 
+                      - AcceptedCancellationRequest 
+                      - AcceptedCreditSettlementCompleted 
+                      - AcceptedCustomerProfile 
+                      - AcceptedFundsChecked 
+                      - AcceptedSettlementCompleted 
+                      - AcceptedSettlementInProcess
+                      - AcceptedTechnicalValidation
+                      - AcceptedWithChange
+                      - AcceptedWithoutPosting
+                      - Cancelled
+                      - NoCancellationProcess
+                      - PartiallyAcceptedCancellationRequest
+                      - PartiallyAcceptedTechnicalCorrect
+                      - PaymentCancelled
+                      - Pending
+                      - PendingCancellationRequest
+                      - Received
+                      - Rejected
+                      - RejectedCancellationRequest
+                  StatusUpdateDateTime:
+                    type: string
+                    format: date-time
+                    description: >
+                      Date and time at which the status was assigned to the transfer.
+                  StatusDetail:
+                    type: object
+                    required:
+                      - Status
+                    properties:
+                      LocalInstrument:
+                        $ref: '#/components/schemas/OBExternalLocalInstrument1Code'
+                      Status:
+                        type: string
+                        maxLength: 128
+                        description: |-
+                          Status of a transfer, as assigned by the transaction administrator.
+                      StatusReason:
+                        type: string
+                        description: |- 
+                          Reason Code provided for the status of a transfer.
+                        enum:
+                          - Cancelled 
+                          - PendingFailingSettlement 
+                          - PendingSettlement 
+                          - Proprietary 
+                          - ProprietaryRejection 
+                          - Suspended 
+                          - Unmatched
+                      StatusReasonDescription:
+                        type: string
+                        maxLength: 128
+                        description: |-
+                          Reason provided for the status of a transfer.
+
+    OBMultiAuthorisation1:
+      type: object
+      required:
+        - Status
+      description: |-
+        The multiple authorisation flow response from the ASPSP.
+      properties:
+        Status:
+          $ref: '#/components/schemas/OBExternalStatus2Code'
+        NumberRequired:
+          type: number
+          description: |-
+            Number of authorisations required for payment order (total required at the start of the multi authorisation journey).	
+        NumberReceived:
+          type: number
+          description: |-
+            Number of authorisations received.
+        LastUpdateTime:
+          type: string
+          format: datetime
+          description: |-
+            Last date and time at the authorisation flow was updated.	
+        ExpirationDateTime:
+          type: string
+          format: datetime
+          description: |-
+            Date and time at which the requested authorisation flow must be completed.	
+
+    OBCharge2:
+      type: object
+      required:
+        - ChargeBearer
+        - Type
+        - Amount
+      properties:
+        ChargeBearer:
+          $ref: '#/components/schemas/OBChargeBearerType1Code'
+
+    OBExternalStatus2Code:
+      type: string
+      enum:
+       - Authorised
+       - AwaitingFurtherAuthorisation
+       - Rejected
+
+    OBChargeBearerType1Code:
+      type: string
+      description: |-
+        Specifies which party/parties will bear the charges associated with the processing of the payment transaction.
+      enum:
+        - BorneByCreditor
+        - BorneByDebtor
+        - FollowingServiceLevel
+        - Shared
+
+    OBDomesticRefundAccount1:
+      type: object
+      required:
+        - Account
+        - SchemeName
+        - Identification
+      properties:
+        Account:
+          $ref: '#/components/schemas/OBCashAccountCreditor3'
+        SchemeName:
+          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
+
+
+    OBDomesticVRPInstruction:
+      type: object
+      required:
+        - InstructionIdentification
+        - EndToEndIdentification
+      properties:
+        InstructionIdentification:
+          type: string
+          maxLength: 35
+          description: |-
+            Unique identification as assigned by an instructing party for an instructed party to unambiguously identify the instruction. 
+            Usage: the instruction identification is a point to point reference that can be used between the instructing party and the instructed party to refer to the individual instruction. 
+            It can be included in several messages related to the instruction.
+        EndToEndIdentification:
+          type: string
+          maxLength: 35
+          description: |-
+              Unique identification assigned by the initiating party to unambiguously identify the transaction. 
+              This identification is passed on, unchanged, throughout the entire end-to-end chain. 
+              Usage: The end-to-end identification can be used for reconciliation or to link tasks relating to the transaction. 
+              It can be included in several messages related to the transaction. 
+              OB: The Faster Payments Scheme can only access 31 characters for the EndToEndIdentification field
+        LocalInstrument:
+          $ref: '#/components/schemas/OBExternalLocalInstrument1Code'
+        InstructedAmount:
+          $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
+        Amount:
+          $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+        Currency:
+          $ref: '#/components/schemas/ActiveOrHistoricCurrencyCode'
+        CreditorAgent:
+          $ref: '#/components/schemas/OBBranchAndFinancialInstitutionIdentification6'
+        CreditorAccount:
+          $ref: '#/components/schemas/OBCashAccountCreditor3'
+
+    OBExternalAccountIdentification4Code:
+      type: string
+      description: |-
+        Name of the identification scheme, in a coded form as published in an external list.
+      x-namespaced-enum:
+        - UK.OBIE.BBAN
+        - UK.OBIE.IBAN
+        - UK.OBIE.PAN
+        - UK.OBIE.Paym
+        - UK.OBIE.SortCodeAccountNumber
+
+    OBExternalLocalInstrument1Code:
+      type: string
+      description: |-
+        User community specific instrument.
+        Usage: This element is used to specify a local instrument, local clearing option and/or further qualify the service or service level.
+      x-namespaced-enum:
+      - UK.OBIE.BACS
+      - UK.OBIE.BalanceTransfer
+      - UK.OBIE.CHAPS
+      - UK.OBIE.Euro1
+      - UK.OBIE.FPS
+      - UK.OBIE.Link
+      - UK.OBIE.MoneyTransfer
+      - UK.OBIE.Paym
+      - UK.OBIE.SEPACreditTransfer
+      - UK.OBIE.SEPAInstantCreditTransfer
+      - UK.OBIE.SWIFT
+      - UK.OBIE.Target2
+
+    OBActiveOrHistoricCurrencyAndAmount:
+      required:
+      - Amount
+      - Currency
+      type: object
+      properties:
+        Amount:
+          $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
+        Currency:
+          $ref: '#/components/schemas/ActiveOrHistoricCurrencyCode'
+
+    ActiveOrHistoricCurrencyCode:
+      pattern: ^[A-Z]{3,3}$
+      type: string
+      description: A code allocated to a currency by a Maintenance Agency under an
+        international identification scheme, as described in the latest edition of
+        the international standard ISO 4217 "Codes for the representation of currencies
+        and funds".
+
+    OBActiveCurrencyAndAmount_SimpleType:
+      pattern: ^\d{1,13}$|^\d{1,13}\.\d{1,5}$
+      type: string
+      description: A number of monetary units specified in an active currency where
+        the unit of currency is explicit and compliant with ISO 4217.
 
     OBRisk1:
       type: object
