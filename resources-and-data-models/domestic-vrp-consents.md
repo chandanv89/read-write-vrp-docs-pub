@@ -201,7 +201,7 @@ The Risk block is a common class used in requests and responses
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
-| __Data__ (0..1) | `Data`
+| __Data__ (1..1) | `Data`
 | __ConsentId__  (1..1)| `Data. ConsentId` | Unique identification as assigned by the ASPSP to uniquely identify the consent resource.      | Max128Text
 | __CreationDateTime__ (1..1)| `Data. CreationDateTime` | Date and time at which the resource was created.|ISODateTime
 | __Status__ (1..1) | `Data. Status` | Specifies the status of resource in code form.  |Authorised AwaitingAuthorisation Rejected Revoked Expired

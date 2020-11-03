@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: OBIE VRP Profile
+  description: VRP swagger
+  version: 1.0.0-draft1
+tags:
+  - name: variable-recurring-payments
+paths:
+  /domestic-vrp-consents:
+    post:
+      tags:
+        - variable-recurring-payments
+      summary: create a domestic vrp
+      description: create a domestic vrp
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBDomesticVRPConsentResponse'
+
+  /domestic-vrp-consents/:consentId:
+    get:
+      tags:
+        - variable-recurring-payments
+      summary: create a domestic vrp
+      description: create a domestic vrp
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OBDomesticVRPConsentResponse'
+
+    delete:
+      tags:
+        - variable-recurring-payments
+      summary: create a domestic vrp
+      description: create a domestic vrp
+      responses:
+        '204':
+          description: 'all good'
+
+  /domestic-vrp-consents/:consentId/funds-confirmation:
+    post:
+      tags:
+        - variable-recurring-payments
+      summary: create a domestic vrp
+      description: create a domestic vrp
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/OBVRPFundsConfirmationResponse'
+
+components:
+  schemas:
+    OBDomesticVRPConsentResponse:
+      $ref: 'OBDomesticVRPConsentResponse.yaml#/schemas/OBDomesticVRPConsentResponse'
+
+    OBVRPFundsConfirmationResponse:
+      type: object
+
+
+    Links:
+      type: object
+      properties:
+        self:
+          type: string
+          description: URL da pÃ¡gina atualmente requisitada
+          example: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+        first:
+          type: string
+          description: URL da primeira pÃ¡gina de registros
+          example: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+        prev:
+          type: string
+          description: URL da pÃ¡gina anterior de registros
+        next:
+          type: string
+          description: URL da prÃ³xima pÃ¡gina de registros
+        last:
+          type: string
+          description: URL da Ãºltima pÃ¡gina de registros
+          example: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+    Meta:
+      type: object
+      properties:
+        totalRecords:
+          type: integer
+          description: Total de registros encontrados
+          example: 1
+        totalPages:
+          type: integer
+          description: Total de pÃ¡ginas para os registros encontrados
+          example: 1
+      required:
+        - totalRecords
+        - totalPages
+  securitySchemes:
+    APIKey1:
+      name: API Key
+      type: apiKey
+      in: query
+    APIKey2:
+      name: API Key
+      type: apiKey
+      in: query
