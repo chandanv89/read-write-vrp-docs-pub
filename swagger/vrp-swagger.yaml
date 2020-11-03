@@ -60,53 +60,258 @@ paths:
 components:
   schemas:
     OBDomesticVRPConsentResponse:
-      $ref: 'OBDomesticVRPConsentResponse.yaml#/schemas/OBDomesticVRPConsentResponse'
-
-    OBVRPFundsConfirmationResponse:
       type: object
+      required:
+        - Data
+        - Risk
+        - Links
+        - Meta
 
+      properties:
+        Data:
+          type: object
+          required:
+            - ConsentId
+            - CreationDateTime
+            - Status
+            - StatusUpdateDateTime
+            - ControlParameters
+            - Initiation
+            - DebtorAccount
+          properties:
+            ConsentId:
+              type: string              
+              description: >
+                Unique identification as assigned by the ASPSP to uniquely identify the consent resource.      | Max128Text
+            CreationDateTime:
+              type: string
+              format: date-time
+              description: >
+                Date and time at which the resource was created.|ISODateTime
+            Status:
+              type: string
+              description: >
+                Specifies the status of resource in code form.  |Authorised AwaitingAuthorisation Rejected Revoked Expired
+            StatusUpdateDateTime:
+              type: string
+              format: date-time
+              description: >
+                Date and time at which the resource status was updated.  | ISODateTime  
+            ControlParameters:
+              $ref: '#/components/schemas/OBDomesticVRPControlParameters'
+            Initiation:
+              type: string
+              description: >
+                The parameters of the VRP consent that should remain unchanged for each payment under this VRP |  [OBDomesticVRPInitiation](#OBDomesticVRPInitiation)
+            DebtorAccount:
+              type: string
+              description: >
+                The approved DebtorAccount that the payment can be made from. THe value must be populated for GET responses once the consent is approved. | OBCashAccountDebtorWithName
+        Risk:
+          $ref: '#/components/schemas/OBRisk1'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
+
+
+    OBDomesticVRPControlParameters:
+      type: object
+      required:
+        - VRPType
+
+      properties:
+        ValidFromDateTime:
+          type: string
+          format: date-time
+          description: ^
+            Start date time for which the consent remains valid. | ISODateTime
+        ValidToDateTime:
+          type: string
+          format: date-time
+          description: ^
+            End date time for which the consent remains valid. | ISODateTime
+        Reference:
+          type: string
+          maxLength: 35
+          description: ^
+            Unique reference, as assigned by the creditor, to unambiguously refer to the consent.     | Max35Text  
+        MaximumIndividualAmount:
+          type: object
+          required:
+            - Amount
+            - Currency
+          properties:
+            Amount:
+              type: string
+              description: ^
+                A number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217.
+            Currency:
+              type: string
+              description: ^
+                A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".   | ActiveOrHistoricCurrencyCode  
+        MaximumMonthlyAmount:
+          type: object
+          required:
+            - Amount
+            - Currency
+          properties:
+            Amount:
+              type: string
+              description: ^
+                A number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217.
+            Currency:
+              type: string
+              description: ^
+                A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds".   | ActiveOrHistoricCurrencyCode          
+        VRPType:
+          type: string
+          description: ^
+            The types of payments that can be made under this VRP consent. This can be used to indicate whether this include sweeping payment or other ecommerce payments. A value of `UK.OBIE.VRPType.Sweeping` can only be used when the API is called with the `vrp-consents:sweeping` scope. A value of `UK.OBIE.VRPType.Other` can only be used when the API is called with teh `vrp-consents:other` scope. | OBVRPConsentType - Namespaced Enumeration
+
+
+
+    OBRisk1:
+      type: object
+      properties:
+        PaymentContextCode:
+          type: string
+          description: Specifies the payment context
+          enum:
+          - BillPayment
+          - EcommerceGoods
+          - EcommerceServices
+          - Other
+          - PartyToParty
+        MerchantCategoryCode:
+          maxLength: 4
+          minLength: 3
+          type: string
+          description: Category code conform to ISO 18245, related to the type of
+            services or goods the merchant provides for the transaction.
+        MerchantCustomerIdentification:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: The unique customer identifier of the PSU with the merchant.
+        DeliveryAddress:
+          required:
+          - Country
+          - TownName
+          type: object
+          properties:
+            AddressLine:
+              maxItems: 2
+              minItems: 0
+              type: array
+              items:
+                maxLength: 70
+                minLength: 1
+                type: string
+                description: Information that locates and identifies a specific address,
+                  as defined by postal services, that is presented in free format
+                  text.
+            StreetName:
+              $ref: '#/components/schemas/StreetName'
+            BuildingNumber:
+              $ref: '#/components/schemas/BuildingNumber'
+            PostCode:
+              $ref: '#/components/schemas/PostCode'
+            TownName:
+              $ref: '#/components/schemas/TownName'
+            CountrySubDivision:
+              $ref: '#/components/schemas/CountrySubDivision'
+            Country:
+              pattern: ^[A-Z]{2,2}$
+              type: string
+              description: Nation with its own government, occupying a particular
+                territory.
+          description: Information that locates and identifies a specific address,
+            as defined by postal services or in free format text.
+      description: The Risk section is sent by the initiating party to the ASPSP.
+        It is used to specify additional details for risk scoring for Payments.
+    StreetName:
+      maxLength: 70
+      minLength: 1
+      type: string
+      description: Name of a street or thoroughfare.
+    TownName:
+      maxLength: 35
+      minLength: 1
+      type: string
+      description: Name of a built-up area, with defined boundaries, and a local government.
+    PostCode:
+      maxLength: 16
+      minLength: 1
+      type: string
+      description: Identifier consisting of a group of letters and/or numbers that
+        is added to a postal address to assist the sorting of mail.
+    BuildingNumber:
+      maxLength: 16
+      minLength: 1
+      type: string
+      description: Number that identifies the position of a building on a street.
+    CountrySubDivision:
+      maxLength: 35
+      minLength: 1
+      type: string
+      description: Identifies a subdivision of a country such as state, region, county.
 
     Links:
-      type: object
-      properties:
-        self:
-          type: string
-          description: URL da pÃ¡gina atualmente requisitada
-          example: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
-        first:
-          type: string
-          description: URL da primeira pÃ¡gina de registros
-          example: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
-        prev:
-          type: string
-          description: URL da pÃ¡gina anterior de registros
-        next:
-          type: string
-          description: URL da prÃ³xima pÃ¡gina de registros
-        last:
-          type: string
-          description: URL da Ãºltima pÃ¡gina de registros
-          example: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
-    Meta:
-      type: object
-      properties:
-        totalRecords:
-          type: integer
-          description: Total de registros encontrados
-          example: 1
-        totalPages:
-          type: integer
-          description: Total de pÃ¡ginas para os registros encontrados
-          example: 1
       required:
-        - totalRecords
-        - totalPages
+      - Self
+      type: object
+      properties:
+        Self:
+          type: string
+          format: uri
+        First:
+          type: string
+          format: uri
+        Prev:
+          type: string
+          format: uri
+        Next:
+          type: string
+          format: uri
+        Last:
+          type: string
+          format: uri
+      description: Links relevant to the payload
+    Meta:
+      title: MetaData
+      type: object
+      properties:
+        TotalPages:
+          type: integer
+          format: int32
+        FirstAvailableDateTime:
+          type: string
+          format: date-time
+        LastAvailableDateTime:
+          type: string
+          format: date-time
+      description: Meta Data relevant to the payload
+  
+
+
   securitySchemes:
-    APIKey1:
-      name: API Key
-      type: apiKey
-      in: query
-    APIKey2:
-      name: API Key
-      type: apiKey
-      in: query
+    TPPOAuth2Security:
+      type: oauth2
+      description: TPP client credential authorisation flow with the ASPSP
+      flows:
+        clientCredentials:
+          tokenUrl: https://authserver.example/token
+          scopes:
+            payments: Generic payment scope
+    PSUOAuth2Security:
+      type: oauth2
+      description: OAuth flow, it is required when the PSU needs to perform SCA with
+        the ASPSP when a TPP wants to access an ASPSP resource owned by the PSU
+      flows:
+        authorizationCode:
+          authorizationUrl: https://authserver.example/authorization
+          tokenUrl: https://authserver.example/token
+          scopes:
+            payments: Generic payment scope
+            
