@@ -10,12 +10,9 @@
   - [Payment Order](#payment-order)
 - [Data Model](#data-model)
   - [OBDomesticVRPInstruction](#obdomesticvrpinstruction)
-    - [Data Dictionary](#data-dictionary)
   - [OBDomesticVRPRequest](#obdomesticvrprequest)
-    - [Data Dictionary](#data-dictionary-1)
   - [OBDomesticVRPResponse](#obdomesticvrpresponse)
   - [OBDomesticVRPDetails](#obdomesticvrpdetails)
-    - [UML Diagram](#uml-diagram)
 - [Usage Examples](#usage-examples)
   - [POST /domestic-vrps](#post-domestic-vrps-1)
     - [Request](#request)
@@ -124,9 +121,7 @@ The definitions for the status:
 
 ### OBDomesticVRPInstruction
 
-![OBDomesticVRPInstruction](./images/OBDomesticVRPInstruction.gif)
-
-#### Data Dictionary
+![OBDomesticVRPInstruction](./images/OBDomesticVRPInstruction.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -141,9 +136,7 @@ The definitions for the status:
 
 ### OBDomesticVRPRequest
 
-![OBDomesticVRPRequest](./images/OBDomesticVRPRequest.gif)
-
-#### Data Dictionary
+![OBDomesticVRPRequest](./images/OBDomesticVRPRequest.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -155,7 +148,7 @@ The definitions for the status:
 
 ### OBDomesticVRPResponse
 
-![OBWriteDomesticResponse5](./images/OBWriteDomesticResponse5.gif)
+![OBDomesticVRPResponse](./images/OBDomesticVRPResponse.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -176,9 +169,7 @@ The definitions for the status:
 
 ### OBDomesticVRPDetails
 
-#### UML Diagram
-
-![OBDomesticVRPDetails](./images/OBWritePaymentDetailsResponse1.png)
+![OBDomesticVRPDetails](./images/OBDomesticVRPDetails.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|

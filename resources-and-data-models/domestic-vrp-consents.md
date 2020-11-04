@@ -107,6 +107,8 @@ The data dictionary section gives the detail on the payload content for the VRP 
 
 ### OBCashAccountDebtorWithName
 
+![OBCashAccountDebtorWithName](./images/OBCashAccountDebtorWithName.svg)
+
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
 | __SchemeName__ (1..1) | `SchemeName` | Name of the identification scheme, in a coded form as published in an external list. | Namespaced Enumeration OBExternalAccountIdentification4Code
@@ -116,6 +118,8 @@ The data dictionary section gives the detail on the payload content for the VRP 
 
 ### OBCashAccountCreditor3
 
+![OBCashAccountCreditor3](./images/OBCashAccountCreditor3.svg)
+
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
 | __SchemeName__ (1..1) | `SchemeName` | Name of the identification scheme, in a coded form as published | __Identification__ (1..1) | `Identification` |Identification assigned by an institution to identify an account. This identification is known by the account owner.   |Max256Text
@@ -123,6 +127,9 @@ The data dictionary section gives the detail on the payload content for the VRP 
 | __SecondaryIdentification__ (0..1) | `SecondaryIdentification` |This is secondary identification of the account, as assigned by the account servicing institution.  This can be used by building societies to additionally identify accounts with a roll number__ (in addition to a sort code and account number combination).             |Max34Text
 
 ### OBBranchAndFinancialInstitutionIdentification6
+
+![OBBranchAndFinancialInstitutionIdentification6](./images/OBBranchAndFinancialInstitutionIdentification6.svg)
+
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
 | __SchemeName__ (0..1) | `SchemeName` |Name of the identification scheme, in a coded form as published in an external list. |OBExternalFinancialInstitutionIdentification4Code
@@ -142,16 +149,19 @@ The data dictionary section gives the detail on the payload content for the VRP 
 
 ### OBDomesticVRPInitiation
 
+![OBDomesticVRPInitiation](./images/OBDomesticVRPInitiation.svg)
+
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
 | __DebtorAccount__ (0..1) | `DebtorAccount` | Unambiguous identification of the account of the debtor to which a debit entry will be made as a result of the transaction. | [OBCashAccountDebtorWithName](#OBCashAccountDebtorWithName)
 | __CreditorAgent__ (0..1) | `CreditorAgent` | Financial institution servicing an account for the creditor.     | OBBranchAndFinancialInstitutionIdentification6
 | __CreditorAccount__ (0..1) | `CreditorAccount`   |Unambiguous identification of the account of the creditor to which a credit entry will be posted as a result of the payment transaction.       |OBCashAccountCreditor3
 
-
 ### OBDomesticVRPControlParameters
 
 The VRP consent is a common class used in `domestic-payment-consents` requests and responses
+
+![OBDomesticVRPControlParameters](./images/OBDomesticVRPControlParameters.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -170,6 +180,8 @@ The VRP consent is a common class used in `domestic-payment-consents` requests a
 
 The Risk block is a common class used in requests and responses
 
+![OBRisk](./images/OBRisk.svg)
+
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
 | __PaymentContextCode__ (0..1) | `PaymentContextCode`            |Specifies the payment context        |OBExternalPaymentContext1Code: BillPayment EcommerceGoods EcommerceServices Other PartyToParty
@@ -186,7 +198,7 @@ The Risk block is a common class used in requests and responses
 
 ### OBDomesticVRPConsentRequest
 
-![OBDomesticVRPConsentRequest](./images/OBDomesticVRPConsentRequest.gif)
+![OBDomesticVRPConsentRequest](./images/OBDomesticVRPConsentRequest.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -197,7 +209,7 @@ The Risk block is a common class used in requests and responses
 
 ### OBDomesticVRPConsentResponse
 
-![OBDomesticVRPConsentResponse](./images/OBDomesticVRPConsentResponse.gif)
+![OBDomesticVRPConsentResponse](./images/OBDomesticVRPConsentResponse.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -215,7 +227,7 @@ The Risk block is a common class used in requests and responses
 
 The OBVRPFundsConfirmationRequest object must be used to request funds availability for a specific amount in the Debtor Account included in the VRP consents.
 
-![OBWritePAFundsConfirmationRequest1](./images/OBWritePAFundsConfirmationRequest1.gif)
+![OBVRPFundsConfirmationRequest](./images/OBVRPFundsConfirmationRequest.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -232,7 +244,7 @@ The OBVRPFundsConfirmationResponse object will be used for a response to a call 
 
 - POST /domestic-vrp-consents/{ConsentId}/funds-confirmation
 
-![OBWritePAFundsConfirmationResponse1](./images/OBWritePAFundsConfirmationResponse1.gif)
+![OBVRPFundsConfirmationResponse](./images/OBVRPFundsConfirmationResponse.svg)
 
 The confirmation of funds response contains the result of a funds availability check.
 
