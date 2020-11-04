@@ -307,6 +307,11 @@ components:
 
     OBDomesticVRPRequest:
       type: object
+      required:
+        - Data
+        - Risk
+        - Links
+        - Meta
       properties:
         Data:
           type: object
@@ -325,11 +330,16 @@ components:
               $ref: '#/components/schemas/OBDomesticVRPInitiation'
             Instruction:
               $ref: '#/components/schemas/OBDomesticVRPInstruction'
-            Risk:
-              $ref: '#/components/schemas/OBRisk1'
+        Risk:
+          $ref: '#/components/schemas/OBRisk1'
 
     OBDomesticVRPResponse:
       type: object
+      required:
+        - Data
+        - Risk
+        - Links
+        - Meta
       properties:
         Data:
           type: object
@@ -389,7 +399,20 @@ components:
             Charges:
               type: array
               items:
-                $ref: '#/components/schemas/OBCharge2'
+                required:
+                - Amount
+                - ChargeBearer
+                - Type
+                type: object
+                properties:
+                  ChargeBearer:
+                    $ref: '#/components/schemas/OBChargeBearerType1Code'
+                  Type:
+                    $ref: '#/components/schemas/OBExternalPaymentChargeType1Code'
+                  Amount:
+                    $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
+                description: Set of elements used to provide details of a charge for
+                  the payment initiation.
             Initiation:
               $ref: '#/components/schemas/OBDomesticVRPInitiation'
             Instruction:
@@ -398,6 +421,12 @@ components:
               $ref: '#/components/schemas/OBMultiAuthorisation1'
             DebtorAccount:
               $ref: '#/components/schemas/OBCashAccountDebtorWithName'
+        Risk:
+          $ref: '#/components/schemas/OBRisk1'
+        Links:
+          $ref: '#/components/schemas/Links'
+        Meta:
+          $ref: '#/components/schemas/Meta'
 
     OBDomesticVRPDetails:
       type: object
@@ -555,6 +584,7 @@ components:
       required:
         - InstructionIdentification
         - EndToEndIdentification
+        - CreditorAccount
       properties:
         InstructionIdentification:
           type: string
@@ -576,10 +606,6 @@ components:
           $ref: '#/components/schemas/OBExternalLocalInstrument1Code'
         InstructedAmount:
           $ref: '#/components/schemas/OBActiveOrHistoricCurrencyAndAmount'
-        Amount:
-          $ref: '#/components/schemas/OBActiveCurrencyAndAmount_SimpleType'
-        Currency:
-          $ref: '#/components/schemas/ActiveOrHistoricCurrencyCode'
         CreditorAgent:
           $ref: '#/components/schemas/OBBranchAndFinancialInstitutionIdentification6'
         CreditorAccount:
