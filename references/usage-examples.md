@@ -425,7 +425,7 @@ Content-Type: application/json
     "CreationDateTime": "2017-06-05T15:15:15+00:00",
     "Status": "Authorised",
     "StatusUpdateDateTime": "2017-06-05T15:15:25+00:00",
-    
+
     "ControlParameters": {
       "Reference": "my-first-vrp",
       "VRPType": "UK.OBIE.VRPType.Sweeping",
