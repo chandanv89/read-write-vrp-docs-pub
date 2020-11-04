@@ -10,12 +10,9 @@
   - [Payment Order](#payment-order)
 - [Data Model](#data-model)
   - [OBDomesticVRPInstruction](#obdomesticvrpinstruction)
-    - [Data Dictionary](#data-dictionary)
   - [OBDomesticVRPRequest](#obdomesticvrprequest)
-    - [Data Dictionary](#data-dictionary-1)
   - [OBDomesticVRPResponse](#obdomesticvrpresponse)
   - [OBDomesticVRPDetails](#obdomesticvrpdetails)
-    - [UML Diagram](#uml-diagram)
 - [Usage Examples](#usage-examples)
   - [POST /domestic-vrps](#post-domestic-vrps-1)
     - [Request](#request)
@@ -124,9 +121,7 @@ The definitions for the status:
 
 ### OBDomesticVRPInstruction
 
-![OBDomesticVRPInstruction](./images/OBDomesticVRPInstruction.gif)
-
-#### Data Dictionary
+![OBDomesticVRPInstruction](./images/OBDomesticVRPInstruction.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -137,13 +132,11 @@ The definitions for the status:
 | __Amount__ (1..1) |`InstructedAmount. Amount` |A number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217. |OBActiveCurrencyAndAmount_SimpleType | `^\d{1,13}$\|^\d{1,13}\.\d{1,5}$`
 | __Currency__ (1..1) | `InstructedAmount. Currency` |A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds". |ActiveOrHistoricCurrencyCode | `^[A-Z]{3,3}$`
 | __CreditorAgent__ (0..1) | `CreditorAgent` | Financial institution servicing an account for the creditor.     | OBBranchAndFinancialInstitutionIdentification6
-| __CreditorAccount__ (0..1) | `CreditorAccount`   |Unambiguous identification of the account of the creditor to which a credit entry will be posted as a result of the payment transaction.       |OBCashAccountCreditor3
+| __CreditorAccount__ (1..1) | `CreditorAccount`   |Unambiguous identification of the account of the creditor to which a credit entry will be posted as a result of the payment transaction.       |OBCashAccountCreditor3
 
 ### OBDomesticVRPRequest
 
-![OBDomesticVRPRequest](./images/OBDomesticVRPRequest.gif)
-
-#### Data Dictionary
+![OBDomesticVRPRequest](./images/OBDomesticVRPRequest.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -155,7 +148,7 @@ The definitions for the status:
 
 ### OBDomesticVRPResponse
 
-![OBWriteDomesticResponse5](./images/OBWriteDomesticResponse5.gif)
+![OBDomesticVRPResponse](./images/OBDomesticVRPResponse.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
@@ -176,9 +169,7 @@ The definitions for the status:
 
 ### OBDomesticVRPDetails
 
-#### UML Diagram
-
-![OBDomesticVRPDetails](./images/OBWritePaymentDetailsResponse1.png)
+![OBDomesticVRPDetails](./images/OBDomesticVRPDetails.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
