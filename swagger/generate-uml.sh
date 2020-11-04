@@ -5,7 +5,7 @@
 #
 # requires the generateob tool to be installed:
 # git clone git@bitbucket.org:openbankingteam/uml-generator.git
-# cd uml-generator/class/cmd/generateob
+# cd uml-generator/class/cmd/obgenerate
 # go install
 
 ./generate.sh ./vrp-swagger.yaml \
