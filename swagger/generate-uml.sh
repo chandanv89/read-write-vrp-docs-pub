@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# generates all the specified diagrams, and moves them to the resources-and-data-models/images directory
+# missing objects are logged
+#
+# requires the generateob tool to be installed:
+# git clone git@bitbucket.org:openbankingteam/uml-generator.git
+# cd uml-generator/class/cmd/generateob
+# go install
+
 ./generate.sh ./vrp-swagger.yaml \
 	components.schemas.OBCashAccountDebtorWithName \
 	components.schemas.OBCashAccountCreditor3 \
