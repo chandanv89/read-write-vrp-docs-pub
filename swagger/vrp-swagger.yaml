@@ -395,7 +395,7 @@ components:
               description: >
                 Expected settlement date and time for the payment resource.
             Refund:
-              $ref: '#/components/schemas/OBDomesticRefundAccount1'
+              $ref: '#/components/schemas/OBCashAccountDebtorWithName'
             Charges:
               type: array
               items:
@@ -565,19 +565,6 @@ components:
         - BorneByDebtor
         - FollowingServiceLevel
         - Shared
-
-    OBDomesticRefundAccount1:
-      type: object
-      required:
-        - Account
-        - SchemeName
-        - Identification
-      properties:
-        Account:
-          $ref: '#/components/schemas/OBCashAccountCreditor3'
-        SchemeName:
-          $ref: '#/components/schemas/OBExternalAccountIdentification4Code'
-
 
     OBDomesticVRPInstruction:
       type: object
