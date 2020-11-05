@@ -763,17 +763,7 @@ components:
     Meta:
       title: MetaData
       type: object
-      properties:
-        TotalPages:
-          type: integer
-          format: int32
-        FirstAvailableDateTime:
-          type: string
-          format: date-time
-        LastAvailableDateTime:
-          type: string
-          format: date-time
-      description: Meta Data relevant to the payload
+      description: Meta Data relevant to the payload. At present no fields are used for VRP.
   
 
 

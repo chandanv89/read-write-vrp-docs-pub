@@ -13,7 +13,7 @@
   - [OBBranchAndFinancialInstitutionIdentification6](#obbranchandfinancialinstitutionidentification6)
   - [OBDomesticVRPInitiation](#obdomesticvrpinitiation)
   - [OBDomesticVRPControlParameters](#obdomesticvrpcontrolparameters)
-  - [OBRisk](#obrisk)
+  - [OBRisk1](#obrisk1)
   - [OBDomesticVRPConsentRequest](#obdomesticvrpconsentrequest)
   - [OBDomesticVRPConsentResponse](#obdomesticvrpconsentresponse)
   - [OBVRPFundsConfirmationRequest](#obvrpfundsconfirmationrequest)
@@ -170,11 +170,11 @@ The VRP consent is a common class used in `domestic-payment-consents` requests a
 | __Currency__ (1..1) | `ControlParameters. MaximumMonthlyAmount. Currency` | A code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 "Codes for the representation of currencies and funds". | ActiveOrHistoricCurrencyCode
 | __VRPType__ (1..1) | `ControlParameters. VRPType` | The types of payments that can be made under this VRP consent. This can be used to indicate whether this include sweeping payment or other ecommerce payments. A value of `UK.OBIE.VRPType.Sweeping` can only be used when the API is called with the `vrp-consents:sweeping` scope. A value of `UK.OBIE.VRPType.Other` can only be used when the API is called with teh `vrp-consents:other` scope. | OBVRPConsentType - Namespaced Enumeration
 
-### OBRisk
+### OBRisk1
 
 The Risk block is a common class used in requests and responses
 
-![OBRisk](./images/OBRisk.svg)
+![OBRisk1](./images/OBRisk1.svg)
 
 | Name |Path |Definition | Type |
 | ---- |-----|---------- |------|
