@@ -14,5 +14,5 @@ The OBIE VRP API specification describes a collection of RESTful APIs that enabl
 
 ## References
 
-[Examples](./references/examples.md)
+[Examples](./references/usage-examples.md)
 
