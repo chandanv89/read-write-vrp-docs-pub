@@ -10,4 +10,9 @@ The OBIE VRP API specification describes a collection of RESTful APIs that enabl
 
 [VRP Consents](./resources-and-data-models/domestic-vrp-consents.md)
 
-[Domestic VRP](./resources-and-data-models/domestic-vrp.md)
+[Domestic VRP](./resources-and-data-models/domestic-vrps.md)
+
+## References
+
+[Examples](./references/examples.md)
+
