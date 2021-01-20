@@ -1,0 +1,3 @@
+class CreditorAccount {
+  !include ./_CreditorAccount_fields.pu
+}

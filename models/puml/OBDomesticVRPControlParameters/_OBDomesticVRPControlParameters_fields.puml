@@ -1,0 +1,4 @@
+ValidFromDateTime : (0..1) ISODateTime
+ValidToDateTime : (0..1) ISODateTime
+Reference : (0..1) | Max35Text  
+VRPType : (1..1) <NamespacedEnumeration> OBVRPConsentType

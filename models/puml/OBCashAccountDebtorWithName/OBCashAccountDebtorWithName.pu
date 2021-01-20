@@ -1,0 +1,3 @@
+class DebtorAccount {
+  !include ./_OBCashAccountDebtorWithName_fields.pu
+}

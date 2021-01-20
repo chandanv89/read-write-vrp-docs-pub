@@ -1,0 +1,11 @@
+class OBDomesticVRPInitiation {
+
+}
+
+!include ../OBCashAccountDebtorWithName/OBCashAccountDebtorWithName.pu
+!include ../CreditorAgent/CreditorAgent.pu
+!include ../CreditorAccount/CreditorAccount.pu
+
+OBDomesticVRPInitiation .. DebtorAccount
+OBDomesticVRPInitiation .. CreditorAgent
+OBDomesticVRPInitiation .. CreditorAccount

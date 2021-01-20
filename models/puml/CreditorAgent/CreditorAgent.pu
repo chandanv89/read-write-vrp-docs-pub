@@ -1,0 +1,6 @@
+class CreditorAgent {
+  !include _CreditorAgent_Fields.pu
+}
+
+!include ../PostalAddress/PostalAddress.pu
+CreditorAgent "1" .. "0..1" PostalAddress

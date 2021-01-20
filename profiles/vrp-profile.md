@@ -12,6 +12,7 @@
   - [Scopes](#scopes)
   - [Grants Types](#grants-types)
   - [Consent Authorisation](#consent-authorisation)
+  - [PSU Authentication Methods](#psu-authentication-methods)
   - [Consent Revocation](#consent-revocation)
   - [Multiple Authorisation](#multiple-authorisation)
   - [SCA through the PISP](#sca-through-the-pisp)
@@ -142,12 +143,7 @@ As described in the section below, the ASPSP may also rely on the PISP to carry 
 
 ### Scopes
 
-A PISP can call VRP APIs using one of two scopes:
-
-`vrp-consents:sweeping`: For VRP consents that are used for delivering a "sweeping" use-case.
-`vrp-consents:other`: For VRP consents that are used for delivering use-cases other than "sweeping" use-cases.
-
-This standard does not venture into defining the mechanism for assigning the appropriate scopes to PISPs.
+A PISP can call VRP APIs using the `payments` scope.
 
 ### Grants Types
 
@@ -170,6 +166,15 @@ As part of the authorization code grant:
 
 Once these steps are complete, the consent is considered to have been authorised by the PSU.
 
+### PSU Authentication Methods
+
+The VRP Consent must specify the `PSUAuthenticationMethods` that are acceptable for payments made under that consent.
+
+One or more PSU Authentication methods can be specified:
+
+- __Authentication Not Required__: This indicates that the PSU does not need to authenticate for individual payments and the payments can be made without the PSU being present. This method is useful for sweeping use-cases, but may also be used in other situations.
+- __SCA By TPP__: This indicuates that SCA is carried out by the TPP. The ASPSP and TPP must have a contract in place to accept this type of authentication.
+
 ### Consent Revocation
 
 A PSU may revoke consent for initiation of any future payment orders, by revoking the authorisation of VRP Consent, at any point in time.
@@ -177,7 +182,7 @@ A PSU may revoke consent for initiation of any future payment orders, by revokin
 The PSU may request the TPP to revoke consent that it has authorised. If consent is revoked with the TPP:
 
 - The TPP must cease to initiate any future payment orders or Funds Confirmations using the VRP Consent.
-- The TPP must call the PATCH operation on the VRP Consent resource, with Status modification request to change the VRP Consent Status to Revoked, to indicate to the ASPSP that the PSU has revoked consent.
+- The TPP must call the DELETE operation on the VRP Consent resource to indicate to the ASPSP that the PSU has revoked consent.
 
 The PSU may revoke the VRP Consent via ASPSP's online channel. If the consent is revoked via ASPSP:
 
@@ -187,7 +192,7 @@ The PSU may revoke the VRP Consent via ASPSP's online channel. If the consent is
 
 ### Multiple Authorisation
 
-- Multi-authorisation aspects of VRP Consent and domestic-vrp resource is same PISP R/W Payment Initiation APIs.
+- In the current version of the specification, VRP is not supported for accounts that require multiple PSUs to authorise a payment.
 
 ### SCA through the PISP
 
@@ -201,7 +206,14 @@ If the PSU does not complete a successful consent authorisation (e.g., if the PS
 
 ### Consent Re-authentication
 
-VRP Consents are long-lived and can be re-authenticated by the PSU.
+VRP Consents are long-lived and can be re-authenticated by the PSU. The access token issued by the ASPSP must be valid for the same length of time as the VRP consent.
+
+ASPSPs may revoke access tokens associated with a VRP consent for fraud and risk reduction. In such situations, they would have to provide a event delivery mechanism.
+
+A PSU may re-authenticate a VRP Consent where:
+
+- the resource has a status of `Authorised` and
+- the consent has not expired as determined through the `ValidToDate` in the control parameters.
 
 ### Risk Scoring Information
 

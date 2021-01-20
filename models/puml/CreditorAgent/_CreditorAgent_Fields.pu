@@ -1,0 +1,3 @@
+SchemeName : (0..1) <NamespacedEnumeration> OBExternalFinancialInstitutionIdentification4Code
+Identification : (0..1) Max35Text  
+Name : (0..1) Max140Text

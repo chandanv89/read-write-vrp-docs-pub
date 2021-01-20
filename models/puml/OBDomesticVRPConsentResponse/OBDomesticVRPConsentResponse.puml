@@ -1,0 +1,28 @@
+class OBDomesticVRPConsentRequest {
+
+}
+
+
+class Data {
+  ConsentId : (1..1) Max128Text
+  CreationDateTime : (1..1) ISODateTime
+  Status : (1..1) 
+  StatusUpdateDateTime : (1..1) ISODateTime  
+}
+
+OBDomesticVRPConsentRequest .d. Data
+
+!include ../OBDomesticVRPControlParameters/OBDomesticVRPControlParameters.puml
+!include ../OBDomesticVRPInitiation/OBDomesticVRPInitiation.puml
+!include ../OBCashAccountDebtorWithName/OBCashAccountDebtorWithName.puml
+
+Data .. "[1..1] ControlParameters" OBDomesticVRPControlParameters 
+Data .. "[1..1] Initiation" OBDomesticVRPInitiation 
+Data .. "[1..1]" OBCashAccountDebtorWithName 
+
+
+
+
+
+
+

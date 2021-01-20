@@ -1,0 +1,3 @@
+class PostalAddress {
+  !include ./_PostalAddress_fields.pu
+}

@@ -1,0 +1,4 @@
+SchemeName : (1..1) <NamespacedEnumeration>OBExternalAccountIdentification4Code
+Identification : (1..1) Max256Text
+Name : (1..1) Max70Text  
+SecondaryIdentification : (0..1) Max34Text

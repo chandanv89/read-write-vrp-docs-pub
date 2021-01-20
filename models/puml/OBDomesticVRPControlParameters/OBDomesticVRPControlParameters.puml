@@ -1,0 +1,16 @@
+class OBDomesticVRPControlParameters {
+  !include ./_OBDomesticVRPControlParameters_fields.puml
+}
+
+class MaximumIndividualAmount {
+  Amount : (1..1) 
+  Currency : (1..1) ActiveOrHistoricCurrencyCode  
+}
+
+class MaximumMonthlyAmount {
+  Amount : (1..1) 
+  Currency : (1..1) ActiveOrHistoricCurrencyCode  
+}
+
+OBDomesticVRPControlParameters .. "0..1" MaximumIndividualAmount
+OBDomesticVRPControlParameters .. "0..1" MaximumMonthlyAmount
