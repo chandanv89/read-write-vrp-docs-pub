@@ -78,7 +78,7 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/OBVRPFundsConfirmationResponse"
+                           "$ref": "#components/schemas/OBVRPFundsConfirmationResponse"
                         }
                      }
                   }
@@ -110,6 +110,14 @@
                      "DebtorAccount"
                   ],
                   "properties": {
+                     "ReadRefundAccount": {
+                        "type": "string",
+                        "enum": [
+                           "Yes",
+                           "No"
+                        ],
+                        "description": "Indicates whether information about RefundAccount should be included in the payment response.\n"
+                     },
                      "ConsentId": {
                         "type": "string",
                         "description": "Unique identification as assigned by the ASPSP to uniquely identify the consent resource.      | Max128Text\n"
@@ -164,6 +172,14 @@
                      "Initiation"
                   ],
                   "properties": {
+                     "ReadRefundAccount": {
+                        "type": "string",
+                        "enum": [
+                           "Yes",
+                           "No"
+                        ],
+                        "description": "Indicates whether information about RefundAccount should be included in the payment response.\n"
+                     },
                      "ControlParameters": {
                         "$ref": "#/components/schemas/OBDomesticVRPControlParameters"
                      },
@@ -193,11 +209,6 @@
                   "format": "date-time",
                   "description": "^\nEnd date time for which the consent remains valid. | ISODateTime"
                },
-               "Reference": {
-                  "type": "string",
-                  "maxLength": 35,
-                  "description": "^\nUnique reference, as assigned by the creditor, to unambiguously refer to the consent.     | Max35Text"
-               },
                "MaximumIndividualAmount": {
                   "type": "object",
                   "required": [
@@ -215,26 +226,67 @@
                      }
                   }
                },
-               "MaximumMonthlyAmount": {
-                  "type": "object",
-                  "required": [
-                     "Amount",
-                     "Currency"
-                  ],
-                  "properties": {
-                     "Amount": {
-                        "type": "string",
-                        "description": "^\nA number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217."
-                     },
-                     "Currency": {
-                        "type": "string",
-                        "description": "^\nA code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 \"Codes for the representation of currencies and funds\".   | ActiveOrHistoricCurrencyCode"
+               "PeriodicLimits": {
+                  "type": "array",
+                  "items": {
+                     "type": "object",
+                     "required": [
+                        "PeriodType",
+                        "PeriodAlignment",
+                        "Amount",
+                        "Currency"
+                     ],
+                     "properties": {
+                        "PeriodType": {
+                           "type": "string",
+                           "enum": [
+                              "Day",
+                              "Week",
+                              "Fortnight",
+                              "Month",
+                              "Half-year",
+                              "Year"
+                           ],
+                           "description": "^\nPeriod type for this period limit"
+                        },
+                        "PeriodAlignment": {
+                           "type": "string",
+                           "enum": [
+                              "Consent",
+                              "Calendar"
+                           ],
+                           "description": "^\nSpecifies whether the period starts on the date of consent creation or lines up with a calendar"
+                        },
+                        "Amount": {
+                           "type": "string",
+                           "description": "^\nA number of monetary units specified in an active currency where the unit of currency is explicit and compliant with ISO 4217."
+                        },
+                        "Currency": {
+                           "type": "string",
+                           "description": "^\nA code allocated to a currency by a Maintenance Agency under an international identification scheme, as described in the latest edition of the international standard ISO 4217 \"Codes for the representation of currencies and funds\".   | ActiveOrHistoricCurrencyCode"
+                        }
                      }
                   }
                },
                "VRPType": {
-                  "type": "string",
-                  "description": "^\nThe types of payments that can be made under this VRP consent. This can be used to indicate whether this include sweeping payment or other ecommerce payments. A value of `UK.OBIE.VRPType.Sweeping` can only be used when the API is called with the `vrp-consents:sweeping` scope. A value of `UK.OBIE.VRPType.Other` can only be used when the API is called with teh `vrp-consents:other` scope. | OBVRPConsentType - Namespaced Enumeration"
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  },
+                  "minItems": 1,
+                  "description": "^\nThe types of payments that can be made under this VRP consent. This can be used to indicate whether this include sweeping payment or other ecommerce payments.  | OBVRPConsentType - Namespaced Enumeration"
+               },
+               "PSUAuthenticationMethods": {
+                  "type": "array",
+                  "minItems": 1,
+                  "description": "^\nIndicates that the PSU authentication methods supported.  | OBVRPAuthenticationMethods - Namespaced Enumeration",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "SupplementaryData": {
+                  "type": "object",
+                  "description": "^\nAdditional information that can not be captured in the structured fields and/or any other specific block"
                }
             }
          },
@@ -249,6 +301,22 @@
                },
                "CreditorAccount": {
                   "$ref": "#/components/schemas/OBCashAccountCreditor3"
+               },
+               "RemittanceInformation": {
+                  "type": "object",
+                  "description": "^\nInformation supplied to enable the matching of an entry with the items that the transfer is intended to settle, such as commercial invoices in an accounts' receivable system.",
+                  "properties": {
+                     "Unstructured": {
+                        "type": "string",
+                        "maxLength": 140,
+                        "description": "^\nInformation supplied to enable the matching/reconciliation of an entry with the items that the payment is intended to settle, such as commercial invoices in an accounts' receivable system, in an unstructured form."
+                     },
+                     "Reference": {
+                        "type": "string",
+                        "maxLength": 35,
+                        "description": "^\nUnique reference, as assigned by the creditor,\nto unambiguously refer to the payment transaction. \nUsage - If available, the initiating party should provide this reference in the structured remittance information, to enable reconciliation by the creditor upon receipt of the amount of money. If the business context requires the use of a creditor reference or a payment remit identification, and only one identifier can be passed through the end-to-end chain, the creditor's reference or payment remittance identification should be quoted in the end-to-end transaction identification."
+                     }
+                  }
                }
             }
          },
@@ -259,6 +327,7 @@
                "Identification",
                "Name"
             ],
+            "description": "^\nOnly incuded in the response if `Data. ReadRefundAccount` is set to `Yes` in the consent.",
             "properties": {
                "SchemeName": {
                   "type": "string",
@@ -384,6 +453,7 @@
                   "type": "object",
                   "required": [
                      "ConsentId",
+                     "PSUAuthenticationMethod",
                      "Initiation",
                      "Instruction",
                      "Risk"
@@ -393,6 +463,10 @@
                         "type": "string",
                         "maxLength": 128,
                         "description": "Identifier for the Domestic VRP Consent that this payment is made under."
+                     },
+                     "PSUAuthenticationMethod": {
+                        "type": "string",
+                        "description": "^\nThe authentication method that was used to authenicate the PSU.   | OBVRPAuthenticationMethods - Namespaced Enumeration"
                      },
                      "Initiation": {
                         "$ref": "#/components/schemas/OBDomesticVRPInitiation"
@@ -424,7 +498,6 @@
                      "CreationDateTime",
                      "Status",
                      "StatusUpdateDateTime",
-                     "Refund",
                      "Initiation",
                      "Instruction",
                      "DebtorAccount"
@@ -503,9 +576,6 @@
                      },
                      "Instruction": {
                         "$ref": "#/components/schemas/OBDomesticVRPInstruction"
-                     },
-                     "MultiAuthorisation": {
-                        "$ref": "#/components/schemas/OBMultiAuthorisation1"
                      },
                      "DebtorAccount": {
                         "$ref": "#/components/schemas/OBCashAccountDebtorWithName"
@@ -698,8 +768,7 @@
             "description": "Availaility result, clearly indicating the availability of funds given the Amount in the request.",
             "required": [
                "FundsAvailableDateTime",
-               "FundsAvailable",
-               "DebtorAccount"
+               "FundsAvailable"
             ],
             "properties": {
                "FundsAvailableDateTime": {
@@ -712,42 +781,8 @@
                   "description": "Availaility result, clearly indicating the availability of funds given the Amount in the request.",
                   "enum": [
                      "Available",
-                     "AvailablaWithOverdraft",
                      "NotAvailable"
                   ]
-               },
-               "DebtorAccount": {
-                  "$ref": "#/components/schemas/OBCashAccountDebtorWithName"
-               }
-            }
-         },
-         "OBMultiAuthorisation1": {
-            "type": "object",
-            "required": [
-               "Status"
-            ],
-            "description": "The multiple authorisation flow response from the ASPSP.",
-            "properties": {
-               "Status": {
-                  "$ref": "#/components/schemas/OBExternalStatus2Code"
-               },
-               "NumberRequired": {
-                  "type": "number",
-                  "description": "Number of authorisations required for payment order (total required at the start of the multi authorisation journey)."
-               },
-               "NumberReceived": {
-                  "type": "number",
-                  "description": "Number of authorisations received."
-               },
-               "LastUpdateTime": {
-                  "type": "string",
-                  "format": "datetime",
-                  "description": "Last date and time at the authorisation flow was updated."
-               },
-               "ExpirationDateTime": {
-                  "type": "string",
-                  "format": "datetime",
-                  "description": "Date and time at which the requested authorisation flow must be completed."
                }
             }
          },
@@ -811,6 +846,10 @@
                },
                "CreditorAccount": {
                   "$ref": "#/components/schemas/OBCashAccountCreditor3"
+               },
+               "SupplementaryData": {
+                  "type": "object",
+                  "description": "^\nAdditional information that can not be captured in the structured fields and/or any other specific block"
                }
             }
          },
