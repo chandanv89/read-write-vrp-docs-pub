@@ -78,7 +78,7 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#components/schemas/OBVRPFundsConfirmationResponse"
+                           "$ref": "#/components/schemas/OBVRPFundsConfirmationResponse"
                         }
                      }
                   }
